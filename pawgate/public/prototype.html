@@ -35,7 +35,9 @@ body.electron-app .nav-bar *{display:none!important}
 body.electron-app .screen{padding-bottom:0!important}
 
 body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:#131210}
-body.electron-app.native-app .phone{width:auto!important;flex:1!important;max-width:100%!important;height:100vh!important;height:100dvh!important;border:none!important;border-left:1px solid var(--border)!important}
+body.electron-app.native-app .phone{width:680px!important;flex:none!important;max-width:680px!important;height:100vh!important;height:100dvh!important;border:none!important;border-left:1px solid var(--border)!important;border-right:1px solid var(--border)!important}
+/* Fills remaining space on the right of the phone */
+body.electron-app.native-app::after{content:'';flex:1;background:#131210}
 
 /* Desktop sidebar */
 .desktop-sidebar{display:none;width:220px;min-width:220px;background:#131210;border-right:1px solid var(--border);flex-direction:column;flex-shrink:0}
