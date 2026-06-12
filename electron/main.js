@@ -11,7 +11,7 @@ function createWindow() {
     minHeight: 640,
     title: 'PawGate',
     backgroundColor: '#1e1c18',
-    // icon: path.join(__dirname, 'icon.png'),  // add icon.png/icon.ico/icon.icns here
+    icon: path.join(__dirname, 'icon.ico'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
