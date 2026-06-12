@@ -34,13 +34,13 @@ body.electron-app .nav-bar{display:none!important}
 body.electron-app .nav-bar *{display:none!important}
 body.electron-app .screen{padding-bottom:0!important}
 
-body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:#131210}
-body.electron-app.native-app .phone{width:680px!important;flex:none!important;max-width:680px!important;height:100vh!important;height:100dvh!important;border:none!important;border-left:1px solid var(--border)!important;border-right:1px solid var(--border)!important}
-/* Fills remaining space on the right of the phone */
-body.electron-app.native-app::after{content:'';flex:1;background:#131210}
+body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:#0d0c0a}
+body.electron-app.native-app .phone{width:720px!important;flex:none!important;max-width:720px!important;height:100vh!important;height:100dvh!important;border:none!important;}
+/* Dark right panel */
+body.electron-app.native-app::after{content:'';flex:1;background:#0d0c0a;border-left:1px solid var(--border)}
 
 /* Desktop sidebar */
-.desktop-sidebar{display:none;width:220px;min-width:220px;background:#131210;border-right:1px solid var(--border);flex-direction:column;flex-shrink:0}
+.desktop-sidebar{display:none;width:220px;min-width:220px;background:var(--bg);border-right:1px solid var(--border);flex-direction:column;flex-shrink:0}
 body.electron-app.native-app .desktop-sidebar{display:flex}
 .ds-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .ds-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(184,154,90,.5);flex-shrink:0}
