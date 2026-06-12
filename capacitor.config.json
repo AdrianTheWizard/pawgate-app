@@ -1,0 +1,18 @@
+{
+  "appId": "com.pawgate.app",
+  "appName": "PawGate",
+  "webDir": "pawgate/public",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_pawgate",
+      "iconColor": "#b89a5a"
+    },
+    "StatusBar": {
+      "style": "Dark",
+      "backgroundColor": "#1e1c18"
+    }
+  }
+}

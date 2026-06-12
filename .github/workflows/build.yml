@@ -1,0 +1,138 @@
+name: Build PawGate
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# ─────────────────────────────────────────────────────────
+# MOBILE BUILDS
+# ─────────────────────────────────────────────────────────
+
+jobs:
+  # ── Android APK (free Linux runner) ──────────────────────
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Sync Capacitor → Android
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PawGate-Android-debug-${{ github.run_number }}.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+  # ── iOS simulator build (macOS runner) ───────────────────
+  # For a signed IPA (App Store), configure Apple signing secrets.
+  # See: https://capacitorjs.com/docs/ios/deploying-to-app-store
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Sync Capacitor → iOS
+        run: npx cap sync ios
+
+      - name: Pod install
+        working-directory: ios/App
+        run: pod install
+
+      - name: Build iOS (simulator, unsigned)
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+# ─────────────────────────────────────────────────────────
+# DESKTOP BUILDS  (Electron)
+# ─────────────────────────────────────────────────────────
+
+  # ── Windows installer (.exe) ──────────────────────────────
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build Windows NSIS installer
+        run: npx electron-builder --win --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PawGate-Windows-Setup-${{ github.run_number }}
+          path: dist-electron/*.exe
+          retention-days: 30
+
+  # ── macOS disk image (.dmg) ───────────────────────────────
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build macOS DMG (unsigned)
+        # For a notarized DMG (required for Gatekeeper), add:
+        #   APPLE_ID, APPLE_APP_PASSWORD, APPLE_TEAM_ID to repo secrets
+        #   and set CSC_LINK + CSC_KEY_PASSWORD for the signing cert.
+        run: npx electron-builder --mac --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PawGate-macOS-${{ github.run_number }}
+          path: dist-electron/*.dmg
+          retention-days: 30
+
+  # ── Optional: create a GitHub Release with all artifacts ──
+  # Uncomment when you're ready to publish releases:
+  #
+  # release:
+  #   needs: [build-android, build-windows, build-mac]
+  #   runs-on: ubuntu-latest
+  #   if: startsWith(github.ref, 'refs/tags/')
+  #   steps:
+  #     - uses: actions/download-artifact@v4
+  #     - uses: softprops/action-gh-release@v2
+  #       with:
+  #         files: "**/*.apk\n**/*.exe\n**/*.dmg"

@@ -1,0 +1,67 @@
+{
+  "name": "pawgate",
+  "version": "1.0.0",
+  "description": "PawGate — Smart kennel management",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "electron:dev":   "electron .",
+    "dist:win":       "electron-builder --win   --publish never",
+    "dist:mac":       "electron-builder --mac   --publish never",
+    "dist:linux":     "electron-builder --linux --publish never",
+    "sync":           "cap sync",
+    "ios":            "cap open ios",
+    "android":        "cap open android",
+    "build:android":  "cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/core":                    "^6.0.0",
+    "@capacitor/app":                     "^6.0.0",
+    "@capacitor/haptics":                 "^6.0.0",
+    "@capacitor/keyboard":                "^6.0.0",
+    "@capacitor/status-bar":              "^6.0.0",
+    "@capacitor/local-notifications":     "^6.0.0",
+    "@capacitor/network":                 "^6.0.0",
+    "@capacitor-community/bluetooth-le":  "^4.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli":     "^6.0.0",
+    "@capacitor/ios":     "^6.0.0",
+    "@capacitor/android": "^6.0.0",
+    "electron":           "^31.0.0",
+    "electron-builder":   "^24.13.0"
+  },
+  "build": {
+    "appId":       "com.pawgate.app",
+    "productName": "PawGate",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "pawgate/public/**/*"
+    ],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon":   "electron/icon.ico"
+    },
+    "mac": {
+      "target":   [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "icon":     "electron/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": [{ "target": "AppImage", "arch": ["x64"] }],
+      "icon":   "electron/icon.png"
+    },
+    "nsis": {
+      "oneClick":                          false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut":             true,
+      "createStartMenuShortcut":           true
+    },
+    "dmg": {
+      "title": "PawGate"
+    }
+  }
+}
