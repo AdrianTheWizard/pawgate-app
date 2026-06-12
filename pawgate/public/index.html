@@ -31,10 +31,11 @@ body.native-app .nav-bar{padding-bottom:env(safe-area-inset-bottom,0px)}
 
 /* ── Electron desktop: sidebar layout ── */
 body.electron-app .nav-bar{display:none!important}
-body.electron-app .screen{padding-bottom:0}
+body.electron-app .nav-bar *{display:none!important}
+body.electron-app .screen{padding-bottom:0!important}
 
-body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:#0f0e0c}
-body.electron-app.native-app .phone{width:auto!important;flex:1!important;max-width:780px!important;height:100vh!important;height:100dvh!important;border-left:1px solid var(--border)!important;border-right:1px solid var(--border)!important}
+body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:#131210}
+body.electron-app.native-app .phone{width:auto!important;flex:1!important;max-width:100%!important;height:100vh!important;height:100dvh!important;border:none!important;border-left:1px solid var(--border)!important}
 
 /* Desktop sidebar */
 .desktop-sidebar{display:none;width:220px;min-width:220px;background:#131210;border-right:1px solid var(--border);flex-direction:column;flex-shrink:0}
@@ -52,8 +53,8 @@ body.electron-app.native-app .desktop-sidebar{display:flex}
 .ds-badge.show{display:block}
 .ds-footer{padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:#4a4840;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
 
-/* Right gutter fills remaining space */
-body.electron-app.native-app::after{content:'';flex:1;background:#0f0e0c}
+/* Sidebar takes fixed width, phone fills the rest */
+body.electron-app.native-app .desktop-sidebar{flex-shrink:0}
 
 /* ── Phone-mockup scaling on desktop browser: shrink to fit viewport ── */
 body.scaled .phone{transition:transform .1s}
