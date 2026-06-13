@@ -30,14 +30,16 @@ body.native-app .statusbar{display:none!important}
 body.native-app .nav-bar{padding-bottom:env(safe-area-inset-bottom,0px)}
 
 /* ── Electron desktop: sidebar layout ── */
+body.electron-app .bottom-nav{display:none!important}
 body.electron-app .nav-bar{display:none!important}
-body.electron-app .nav-bar *{display:none!important}
 body.electron-app .screen{padding-bottom:0!important}
+body.electron-app .cal-day{aspect-ratio:unset!important;height:44px!important;font-size:12px!important}
+body.electron-app .cal-grid{gap:2px!important;padding-bottom:4px!important}
+body.electron-app .cal-grid-hdr{font-size:11px!important}
 
-body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:#0d0c0a}
-body.electron-app.native-app .phone{width:720px!important;flex:none!important;max-width:720px!important;height:100vh!important;height:100dvh!important;border:none!important;}
-/* Dark right panel */
-body.electron-app.native-app::after{content:'';flex:1;background:#0d0c0a;border-left:1px solid var(--border)}
+body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:var(--bg)}
+body.electron-app.native-app .phone{flex:1!important;width:auto!important;max-width:none!important;height:100vh!important;height:100dvh!important;border:none!important;}
+body.electron-app.native-app::after{content:none}
 
 /* Desktop sidebar */
 .desktop-sidebar{display:none;width:220px;min-width:220px;background:var(--bg);border-right:1px solid var(--border);flex-direction:column;flex-shrink:0}
@@ -393,6 +395,7 @@ body.scaled .phone{transition:transform .1s}
 .auth-tab.auth-tab-active{background:#272420;color:#ede8dc}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://unpkg.com/mqtt@5/dist/mqtt.min.js"></script>
 </head>
 <body>
 
@@ -417,6 +420,10 @@ body.scaled .phone{transition:transform .1s}
         <div style="font-size:10px;color:#8a8270;margin-bottom:5px;font-weight:700;letter-spacing:.08em">PASSORD</div>
         <input id="auth-pass" type="password" placeholder="••••••••" autocomplete="current-password" style="width:100%;background:#1e1c18;border:1px solid #3e3a32;border-radius:11px;padding:13px 14px;font-size:15px;color:#ede8dc;outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='#b89a5a'" onblur="this.style.borderColor='#3e3a32'" onkeydown="if(event.key==='Enter')handleLogin()">
       </div>
+      <label style="display:flex;align-items:center;gap:9px;margin-bottom:16px;cursor:pointer;user-select:none">
+        <div id="remember-box" onclick="toggleRemember()" style="width:18px;height:18px;border-radius:5px;border:1.5px solid #4e4a40;background:#1e1c18;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s"></div>
+        <span style="font-size:13px;color:#8a8270" onclick="toggleRemember()">Husk meg på denne eininga</span>
+      </label>
       <button id="auth-submit-btn" onclick="handleLogin()" style="width:100%;background:linear-gradient(135deg,#c4a65e,#b89a5a);border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:700;color:#1a1714;cursor:pointer;letter-spacing:-.01em;box-shadow:0 4px 20px rgba(184,154,90,.25)">Logg inn</button>
     </div>
     <div id="auth-register" style="display:none">
@@ -511,7 +518,7 @@ body.scaled .phone{transition:transform .1s}
           </div>
         </div>
       </div>
-      <div class="cam-select-row" onclick="om('m-cam')">
+      <div class="cam-select-row" onclick="if(activeBinge){const u=document.getElementById('cam-stream-url');const t=document.getElementById('cam-stream-type');if(u)u.value=activeBinge.camUrl||'';if(t)t.value=activeBinge.camType||'mjpeg';}om('m-cam')">
         <div class="csl-left"><div class="csl-lbl">Tilkopla kamera</div><div class="csl-val" id="d-cam">Kamera 1 – Binge 1</div></div>
         <div class="csl-right">Bytt →</div>
       </div>
@@ -556,7 +563,7 @@ body.scaled .phone{transition:transform .1s}
       <div class="dsection">
         <div class="dsh"><div class="dsh-title">Spyling</div><div class="status-badge badge-idle" id="d-wbadge">Venter</div></div>
         <div class="spyl-ctrl">
-          <button class="spyl-btn" id="spyl-btn" onclick="triggerSpray()">Start spyling</button>
+          <button class="spyl-btn" id="spyl-btn" onclick="confirmSpray()">Start spyling</button>
           <div style="font-size:11px;color:var(--muted)">Planlagt — trykk for å endre</div>
           <div class="spyl-sched" id="spyl-sched"></div>
         </div>
@@ -791,8 +798,8 @@ body.scaled .phone{transition:transform .1s}
       <div class="sg-lbl">Anlegg</div>
       <div class="sg-block">
         <div class="sr" onclick="openKennelModal()"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div><div class="sr-lbl">Kennelnamn</div><div class="sr-sub" id="set-kennel-sub">Vestland Kennel</div></div></div><div class="sr-right">Rediger →</div></div>
-        <div class="sr" onclick="openSetting('Lokasjon','Vestland','text','set-loc-sub')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="sr-lbl">Lokasjon</div><div class="sr-sub" id="set-loc-sub">Vestland</div></div></div><div class="sr-right">Rediger →</div></div>
-        <div class="sr" onclick="openSetting('Tidssone','Europa/Oslo','text',null)"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="sr-lbl">Tidssone</div><div class="sr-sub">Europa/Oslo</div></div></div><div class="sr-right">Rediger →</div></div>
+        <div class="sr" onclick="openSetting('Lokasjon',document.getElementById('set-loc-sub').textContent,'text','set-loc-sub','location')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="sr-lbl">Lokasjon</div><div class="sr-sub" id="set-loc-sub">Vestland</div></div></div><div class="sr-right">Rediger →</div></div>
+        <div class="sr" onclick="openSetting('Tidssone',document.getElementById('set-tz-sub').textContent,'text','set-tz-sub','timezone')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="sr-lbl">Tidssone</div><div class="sr-sub" id="set-tz-sub">Europa/Oslo</div></div></div><div class="sr-right">Rediger →</div></div>
       </div>
       <div class="sg-lbl">Kamera</div>
       <div class="sg-block">
@@ -872,8 +879,8 @@ body.scaled .phone{transition:transform .1s}
       </div>
       <div class="sg-lbl">Abonnement</div>
       <div class="sg-block">
-        <div class="sr" onclick="showToast('Plan: Standard · 399 kr/mnd')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div><div><div class="sr-lbl">Aktiv plan</div><div class="sr-sub">Standard · 399 kr/mnd</div></div></div><div class="sr-right"><span class="sr-val">Aktiv</span></div></div>
-        <div class="sr" onclick="showToast('Neste faktura: 11. juli 2026')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div><div class="sr-lbl">Neste faktura</div><div class="sr-sub">11. juli 2026</div></div></div><div class="sr-right">→</div></div>
+        <div class="sr"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div><div><div class="sr-lbl">Aktiv plan</div><div class="sr-sub" id="set-plan-sub">Basis · Gratis</div></div></div><div class="sr-right"><span class="sr-val" id="set-plan-status">Aktiv</span></div></div>
+        <div class="sr"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div><div class="sr-lbl">Neste faktura</div><div class="sr-sub" id="set-plan-renewal-sub">–</div></div></div><div class="sr-right">→</div></div>
       </div>
       <div class="sg-lbl">Betalingsinformasjon</div>
       <div class="sg-block">
@@ -893,7 +900,7 @@ body.scaled .phone{transition:transform .1s}
       </div>
       <div class="sg-lbl">Konto</div>
       <div class="sg-block">
-        <div class="sr" onclick="openSetting('E-post','brukar@example.com','email',null)"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="sr-lbl">E-post</div><div class="sr-sub">brukar@example.com</div></div></div><div class="sr-right">→</div></div>
+        <div class="sr"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="sr-lbl">E-post</div><div class="sr-sub" id="set-email-sub">–</div></div></div></div>
         <div class="sr" onclick="openSetting('Passord','','password',null)"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div><div><div class="sr-lbl">Endre passord</div></div></div><div class="sr-right">→</div></div>
         <div class="sr" onclick="signOut()"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM16 3v18"/><circle cx="14" cy="12" r="1"/></svg></div><div><div class="sr-lbl" style="color:var(--closed)">Logg ut</div></div></div><div class="sr-right">→</div></div>
       </div>
@@ -944,6 +951,9 @@ body.scaled .phone{transition:transform .1s}
         <div id="fs-status" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(122,170,92,.2);color:#7aaa5c;border:1px solid rgba(122,170,92,.3)">OPEN</div>
       </div>
     </div>
+    <!-- live camera feed -->
+    <img id="cam-mjpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none" onerror="this.style.display='none'">
+    <video id="cam-hls" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none"></video>
     <!-- corner brackets -->
     <div style="position:absolute;top:100px;left:20px;width:28px;height:28px;border-top:2px solid rgba(255,255,255,.2);border-left:2px solid rgba(255,255,255,.2)"></div>
     <div style="position:absolute;top:100px;right:20px;width:28px;height:28px;border-top:2px solid rgba(255,255,255,.2);border-right:2px solid rgba(255,255,255,.2)"></div>
@@ -1058,15 +1068,22 @@ body.scaled .phone{transition:transform .1s}
 <!-- Kamera -->
 <div class="modal-back" id="m-cam">
   <div class="modal">
-    <div class="modal-title">Vel kamera for binge</div>
-    <div class="mfield"><div class="mlabel">Tilgjengelege kamera</div>
-      <select class="msel" id="m-cam-sel">
-        <option>Kamera 1 – Binge 1</option><option>Kamera 2 – Binge 2</option>
-        <option>Kamera 3 – Binge 3</option><option>Kamera 4 – Binge 4</option>
-        <option>Kamera 5 – Ikkje tilordna</option>
+    <div class="modal-title">Kamera for binge</div>
+    <div class="mfield">
+      <div class="mlabel">Straum-URL (MJPEG eller HLS)</div>
+      <input type="text" class="minp" id="cam-stream-url" placeholder="http://192.168.1.200:8080/stream">
+    </div>
+    <div class="mfield">
+      <div class="mlabel">Type</div>
+      <select class="msel" id="cam-stream-type">
+        <option value="mjpeg">MJPEG (dei fleste IP-kamera)</option>
+        <option value="hls">HLS / .m3u8 (go2rtc, Frigate)</option>
       </select>
     </div>
-    <div style="font-size:11px;color:var(--muted)">Vel kva kamera som skal vise for denne bingen</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.5">
+      <b>MJPEG</b>: finn URL i kamera-appen din (t.d. <code>http://ip/stream</code>).<br>
+      <b>RTSP</b>: installer <b>go2rtc</b> på ein lokal PC/Raspberry Pi — den konverterer RTSP til MJPEG/HLS.
+    </div>
     <div class="mactions"><button class="mbtn" onclick="cm('m-cam')">Avbryt</button><button class="mbtn prim" onclick="saveCam()">Lagre</button></div>
   </div>
 </div>
@@ -1280,7 +1297,7 @@ function sanitize(str) {
 const SUPABASE_URL = 'https://mzabpomdobkeuhwcjyvs.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16YWJwb21kb2JrZXVod2NqeXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTYzMzAsImV4cCI6MjA5NjgzMjMzMH0.bb4q28cVQiNfwIhEeqJpuJgP2Ro0FUdMe7AeSG-i0ak';
 const _sb = (SUPABASE_URL.startsWith('https://') && window.supabase)
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } })
   : null;
 let _user = null, _kennelId = null;
 
@@ -1300,6 +1317,15 @@ function _authBusy(on) {
   if (btn) { btn.disabled = on; btn.style.opacity = on ? '.6' : '1'; }
 }
 
+let _rememberMe = false;
+function toggleRemember() {
+  _rememberMe = !_rememberMe;
+  const box = document.getElementById('remember-box');
+  box.style.background    = _rememberMe ? '#b89a5a' : '#1e1c18';
+  box.style.borderColor   = _rememberMe ? '#b89a5a' : '#4e4a40';
+  box.innerHTML           = _rememberMe ? '<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4l3 3 6-6" stroke="#1a1714" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
+}
+
 async function handleLogin() {
   const email = document.getElementById('auth-email').value.trim();
   const pass  = document.getElementById('auth-pass').value;
@@ -1309,6 +1335,14 @@ async function handleLogin() {
   const { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
   _authBusy(false);
   if (error) { _authErr(error.message); return; }
+  if (_rememberMe && data.session) {
+    localStorage.setItem('pg_session', JSON.stringify({
+      access_token:  data.session.access_token,
+      refresh_token: data.session.refresh_token,
+    }));
+  } else {
+    localStorage.removeItem('pg_session');
+  }
   await afterSignIn(data.user);
 }
 
@@ -1336,9 +1370,8 @@ async function afterSignIn(user) {
   document.getElementById('auth-screen').style.display  = 'none';
   document.getElementById('phone').style.display         = '';
   document.getElementById('page-header').style.display   = '';
-  document.querySelectorAll('.sr-sub').forEach(el => {
-    if (el.textContent.trim() === 'brukar@example.com') el.textContent = user.email || '';
-  });
+  const emailEl = document.getElementById('set-email-sub');
+  if (emailEl) emailEl.textContent = user.email || '';
   if (_sb && user && user.id) {
     await loadFromCloud(user.id);
     subscribeToRealtime();
@@ -1346,6 +1379,56 @@ async function afterSignIn(user) {
 }
 
 async function loadFromCloud(userId) {
+  _profileId = userId;
+
+  // Load profile (plan, theme, language, notifications)
+  const { data: profile } = await _sb.from('profiles').select('*').eq('id', userId).single();
+  if (profile) {
+    // Plan
+    const planNames = {basis:'Basis · Gratis', pro:'Pro · 399 kr/mnd', complete:'Complete'};
+    const planEl = document.getElementById('set-plan-sub');
+    const planStatusEl = document.getElementById('set-plan-status');
+    const planRenewalEl = document.getElementById('set-plan-renewal-sub');
+    if (planEl) planEl.textContent = planNames[profile.plan] || 'Basis · Gratis';
+    if (planStatusEl) planStatusEl.textContent = profile.plan_status === 'active' ? 'Aktiv' : profile.plan_status || 'Aktiv';
+    if (planRenewalEl && profile.plan_renewal) planRenewalEl.textContent = profile.plan_renewal;
+
+    // Theme
+    if (profile.theme_id) {
+      const t = premadeThemes.find(x => x.id === profile.theme_id);
+      if (t) { applyTheme(t); currentThemeId = t.id; }
+    }
+
+    // Language
+    if (profile.lang && profile.lang !== currentLang) setLang(profile.lang);
+
+    // Notification switches
+    if (profile.notif_prefs) {
+      const prefs = profile.notif_prefs;
+      ['luke','spyl','task','conn'].forEach(k => {
+        const sw = document.getElementById(`sw-${k}`);
+        if (sw) sw.classList.toggle('on', prefs[k] !== false);
+      });
+    }
+
+    // Smart alerts
+    if (profile.smart_alerts) {
+      const sa = profile.smart_alerts;
+      if (sa.nospyl !== undefined) {
+        document.getElementById('sw-nospyl')?.classList.toggle('on', !!sa.nospyl?.on);
+        if (sa.nospyl?.hours) { const el=document.getElementById('smart-nospyl-sub'); if(el) el.textContent=`${sa.nospyl.on?'Aktiv':'Av'} · ${sa.nospyl.hours} timar`; }
+      }
+      if (sa.temp !== undefined) document.getElementById('sw-temp')?.classList.toggle('on', !!sa.temp?.on);
+      if (sa.lukefail !== undefined) document.getElementById('sw-lukefail')?.classList.toggle('on', !!sa.lukefail);
+      if (sa.camfail !== undefined) document.getElementById('sw-camfail')?.classList.toggle('on', !!sa.camfail);
+      if (sa.inact !== undefined) {
+        document.getElementById('sw-inact')?.classList.toggle('on', !!sa.inact?.on);
+        if (sa.inact?.hours) { const el=document.getElementById('smart-inact-sub'); if(el) el.textContent=`${sa.inact.on?'Aktiv':'Av'} · ${sa.inact.hours} timar`; }
+      }
+    }
+  }
+
+  // Load kennel
   const { data: kennels } = await _sb.from('kennels').select('*').eq('owner_id', userId).limit(1);
   if (kennels && kennels.length > 0) {
     const k = kennels[0];
@@ -1354,8 +1437,12 @@ async function loadFromCloud(userId) {
     document.getElementById('kennel-name-display').textContent = kennelName;
     const ks = document.getElementById('set-kennel-sub');
     if (ks) ks.textContent = kennelName;
+    const locEl = document.getElementById('set-loc-sub');
+    if (locEl && k.location) locEl.textContent = k.location;
   }
   if (!_kennelId) return;
+
+  // Load binges
   const { data: rows } = await _sb.from('binges').select('*').eq('kennel_id', _kennelId).order('sort_order');
   if (rows && rows.length > 0) {
     binges = rows.map((r, i) => ({
@@ -1365,15 +1452,42 @@ async function loadFromCloud(userId) {
            {t:'12:00',label:'Middag',enabled:true,active:false},
            {t:'18:00',label:'Kveld',enabled:true,active:false}],
       ao: r.auto_open || '07:00', ac: r.auto_close || '21:00',
-      cam: `Kamera ${i+1} – ${r.name}`, spraying: false,
+      lukeHw: r.luke_hw || 'pawgate', lukeIp: r.luke_ip || '', lukeCh: r.luke_channel ?? 0,
+      lukeCloseUrl: r.luke_close_url || '', lukeTopic: r.luke_topic || '', lukePort: r.luke_port || '1883',
+      spylHw: r.spyl_hw || 'pawgate', spylIp: r.spyl_ip || '', spylCh: r.spyl_channel ?? 0,
+      spylCloseUrl: r.spyl_close_url || '', spylTopic: r.spyl_topic || '', spylPort: r.spyl_port || '1883',
+      camUrl: r.cam_url || '', camType: r.cam_type || 'mjpeg',
+      cam: r.cam_url ? `Kamera tilkopla` : `Kamera ${i+1} – ${r.name}`, spraying: false,
     }));
     renderList(); updateCounts();
     if (binges.length > 0) openDetail(binges[0].id);
+  }
+
+  // Load tasks
+  const { data: taskRows } = await _sb.from('tasks').select('*').eq('kennel_id', _kennelId).order('created_at');
+  if (taskRows && taskRows.length > 0) {
+    tasks = taskRows.map(r => ({id: r.id, title: r.title, date: r.date, time: r.time||'', tag: r.tag||'routine', done: r.done}));
+    renderCalendar(); renderTaskList();
+  }
+}
+
+function pgNotify(title, body) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    new Notification(title, { body, icon: '' });
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') new Notification(title, { body, icon: '' });
+    });
   }
 }
 
 function subscribeToRealtime() {
   if (!_sb || !_kennelId) return;
+  // Request notification permission on first realtime connect
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
   _sb.channel('pawgate-binges').on('postgres_changes', {
     event: 'UPDATE', schema: 'public', table: 'binges',
     filter: `kennel_id=eq.${_kennelId}`,
@@ -1381,8 +1495,15 @@ function subscribeToRealtime() {
     const r = payload.new;
     const b = binges.find(x => x.id === r.id);
     if (!b) return;
+    const wasOpen = b.open;
     b.open = r.is_open; b.name = r.name; b.dog = r.dog || '–';
     b.lc = r.last_changed || b.lc;
+    if (r.is_open !== wasOpen) {
+      pgNotify(
+        r.is_open ? `${r.name} — luke opna` : `${r.name} — luke lukka`,
+        r.dog ? `Hund: ${r.dog}` : ''
+      );
+    }
     renderList(); updateCounts();
     if (activeBinge && activeBinge.id === r.id) updateDetailUI();
   }).subscribe();
@@ -1390,6 +1511,7 @@ function subscribeToRealtime() {
 
 async function signOut() {
   if (_sb) await _sb.auth.signOut();
+  localStorage.removeItem('pg_session');
   _user = null; _kennelId = null;
   document.getElementById('phone').style.display        = 'none';
   document.getElementById('page-header').style.display  = 'none';
@@ -1426,7 +1548,7 @@ let tasks=[
 let nextId=5,activeBinge=null,editSprayIdx=null,sprayTimer=null,recActive=false;
 let screenStack=['overview'],editMode=false,dragSrc=null;
 let calYear=now.getFullYear(),calMonth=now.getMonth(),selectedDay=fd(now);
-let settingTargetId=null,selectedPayType=null;
+let settingTargetId=null,settingDbField=null,selectedPayType=null;
 
 function fd(d){return d.toISOString().slice(0,10)}
 function ad(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r}
@@ -1564,6 +1686,7 @@ function renderList(){
         if(dragSrc===null||dragSrc===idx)return;
         const moved=binges.splice(dragSrc,1)[0];binges.splice(idx,0,moved);
         dragSrc=null;renderList();showToast('Rekkjefølgje oppdatert ✓');
+        if(_sb&&_kennelId) binges.forEach((b,i)=>{if(typeof b.id!=='number') _sb.from('binges').update({sort_order:i}).eq('id',b.id).then(()=>{});});
       });
     } else {
       const sprayClass = b.spraying ? 'ctrl-btn wb spraying' : 'ctrl-btn wb';
@@ -1583,7 +1706,7 @@ function renderList(){
           ${b.open
             ?`<button class="ctrl-btn cb" onclick="toggleLuke(${b.id},false);event.stopPropagation()">Lukk luke</button>`
             :`<button class="ctrl-btn ob" onclick="toggleLuke(${b.id},true);event.stopPropagation()">Opne luke</button>`}
-          <button class="${sprayClass}" onclick="quickSpray(${b.id},this);event.stopPropagation()">${b.spraying?'Spyler...':'Spyl'}</button>
+          <button class="${sprayClass}" onclick="confirmSpray(${b.id},this);event.stopPropagation()">${b.spraying?'Spyler...':'Spyl'}</button>
         </div>`;
     }
     list.appendChild(card);
@@ -1591,19 +1714,75 @@ function renderList(){
   updateCounts();
 }
 
+// MQTT client pool — one connection per broker
+const _mqttClients = {};
+function _mqttClient(brokerIp, port) {
+  const key = `${brokerIp}:${port}`;
+  if (_mqttClients[key]) return _mqttClients[key];
+  if (typeof mqtt === 'undefined') return null;
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const client = mqtt.connect(`${proto}://${brokerIp}:${port}/mqtt`, {
+    connectTimeout: 5000, reconnectPeriod: 5000,
+  });
+  client.on('error', () => showToast('⚠️ MQTT: klarte ikkje kople til broker'));
+  _mqttClients[key] = client;
+  return client;
+}
+
+async function hwCall(b, action) {
+  const hw       = action === 'spray' ? b.spylHw        : b.lukeHw;
+  const ip       = action === 'spray' ? b.spylIp        : b.lukeIp;
+  const closeUrl = action === 'spray' ? b.spylCloseUrl  : b.lukeCloseUrl;
+  const ch       = action === 'spray' ? (b.spylCh ?? 0) : (b.lukeCh ?? 0);
+  const topic    = action === 'spray' ? b.spylTopic     : b.lukeTopic;
+  const port     = action === 'spray' ? (b.spylPort || '1883') : (b.lukePort || '1883');
+  if (!ip || hw === 'pawgate' || hw === 'none') return;
+  const on = action === 'open' || action === 'spray';
+  try {
+    if (hw === 'shelly') {
+      const gen2 = await fetch(`http://${ip}/rpc/Switch.Set`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({id: ch, on}), signal: AbortSignal.timeout(3000),
+      }).catch(() => null);
+      if (!gen2 || !gen2.ok) {
+        await fetch(`http://${ip}/relay/${ch}?turn=${on?'on':'off'}`, { signal: AbortSignal.timeout(3000) });
+      }
+    } else if (hw === 'sonoff') {
+      await fetch(`http://${ip}:8081/zeroconf/switch`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({deviceid:'', data:{switch: on?'on':'off'}}),
+        signal: AbortSignal.timeout(3000),
+      });
+    } else if (hw === 'wifi') {
+      const url = on ? ip : (closeUrl || ip.replace(/\/on\/?$/, '/off'));
+      await fetch(url, { signal: AbortSignal.timeout(3000) });
+    } else if (hw === 'mqtt') {
+      if (!topic) { showToast('⚠️ MQTT: topic ikkje konfigurert'); return; }
+      const client = _mqttClient(ip, port);
+      if (!client) { showToast('⚠️ MQTT-bibliotek ikkje lasta'); return; }
+      client.publish(topic, on ? '1' : '0', { qos: 1 });
+    }
+  } catch(e) {
+    showToast('⚠️ Klarte ikkje nå eininga — sjekk nettverk');
+  }
+}
+
 function toggleLuke(id,open){
   const b=binges.find(x=>x.id===id);b.open=open;b.lc=new Date().toTimeString().slice(0,5)+' i dag';
   renderList();if(activeBinge&&activeBinge.id===id)updateDetailUI();
   showToast(`${sanitize(b.name)}: Luke ${open?'opna':'lukka'} ✓`);
   sbSaveBinge(b);
+  hwCall(b, open ? 'open' : 'close');
 }
 
 function quickSpray(id,btn){
   const b=binges.find(x=>x.id===id);if(b.spraying)return;
   b.spraying=true;renderList();showToast(`${sanitize(b.name)}: Spyling starta ~`);
+  hwCall(b, 'spray');
   setTimeout(()=>{
     b.spraying=false;b.ls=new Date().toTimeString().slice(0,5)+' i dag';
     renderList();showToast(`${sanitize(b.name)}: Spyling ferdig ✓`);
+    sbSaveBinge(b);
   },3000);
 }
 
@@ -1635,7 +1814,17 @@ function dSetLuke(open){
 }
 function saveAuto(t,v){if(!activeBinge)return;if(t==='open')activeBinge.ao=v;else activeBinge.ac=v;showToast(`Automatisk ${t==='open'?'opning':'lukking'} → ${v} ✓`)}
 function toggleSw(el,lbl){el.classList.toggle('on');showToast(`${lbl} ${el.classList.contains('on')?'på':'av'}`)}
-function toggleSwRow(row,lbl){const sw=row.querySelector('.sw');if(sw){sw.classList.toggle('on');showToast(`${lbl} ${sw.classList.contains('on')?'på':'av'}`)}}
+function toggleSwRow(row,lbl){
+  const sw=row.querySelector('.sw');if(!sw)return;
+  sw.classList.toggle('on');
+  showToast(`${lbl} ${sw.classList.contains('on')?'på':'av'}`);
+  sbSaveProfile({notif_prefs:{
+    luke: document.getElementById('sw-luke')?.classList.contains('on')!==false,
+    spyl: document.getElementById('sw-spyl')?.classList.contains('on')!==false,
+    task: document.getElementById('sw-task')?.classList.contains('on')!==false,
+    conn: document.getElementById('sw-conn')?.classList.contains('on')!==false,
+  }});
+}
 
 function renderSpraySched(){
   if(!activeBinge)return;
@@ -1711,9 +1900,17 @@ function toggleRec(btn){
   showToast(recActive?'Opptak starta':'⏹ Opptak stoppa og lagra');
 }
 function saveCam(){
-  if(!activeBinge)return;const sel=document.getElementById('m-cam-sel');
-  activeBinge.cam=sel.options[sel.selectedIndex].text;
-  document.getElementById('d-cam').textContent=activeBinge.cam;cm('m-cam');showToast('Kamera oppdatert ✓');
+  if(!activeBinge)return;
+  const url = (document.getElementById('cam-stream-url')?.value || '').trim();
+  const type = document.getElementById('cam-stream-type')?.value || 'mjpeg';
+  if (url) {
+    activeBinge.camUrl = url;
+    activeBinge.camType = type;
+    activeBinge.cam = 'Kamera tilkopla';
+  }
+  document.getElementById('d-cam').textContent = activeBinge.cam;
+  cm('m-cam'); showToast('Kamera oppdatert ✓');
+  sbSaveBinge(activeBinge);
 }
 function openEditName(){if(!activeBinge)return;document.getElementById('m-bname').value=activeBinge.name;document.getElementById('m-dname').value=activeBinge.dog;om('m-name')}
 function saveName(){
@@ -1764,13 +1961,23 @@ function renderTaskList(){
     c.appendChild(item);
   });updateCounts();
 }
-function toggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;renderTaskList();renderCalendar();showToast(t.done?`"${sanitize(t.title)}" fullført ✓`:`"${sanitize(t.title)}" gjenopna`)}
-function deleteTask(id){tasks=tasks.filter(t=>t.id!==id);renderTaskList();renderCalendar();showToast('Oppgåve sletta')}
+function toggleTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.done=!t.done;renderTaskList();renderCalendar();
+  showToast(t.done?`"${sanitize(t.title)}" fullført ✓`:`"${sanitize(t.title)}" gjenopna`);
+  sbUpdateTask(t);
+}
+function deleteTask(id){
+  sbDeleteTask(id);
+  tasks=tasks.filter(t=>t.id!==id);renderTaskList();renderCalendar();showToast('Oppgåve sletta');
+}
 function openAddTask(){document.getElementById('t-title').value='';document.getElementById('t-date').value=selectedDay;document.getElementById('t-time').value='';document.getElementById('t-tag').value='routine';om('m-task')}
-function saveTask(){
+async function saveTask(){
   const title=document.getElementById('t-title').value.trim();if(!title)return;
   const t={id:nextId++,title,date:document.getElementById('t-date').value||fd(new Date()),time:document.getElementById('t-time').value,tag:document.getElementById('t-tag').value,done:false};
   tasks.push(t);selectedDay=t.date;renderCalendar();renderTaskList();cm('m-task');showToast(`"${title}" lagt til ✓`);
+  const saved = await sbInsertTask(t);
+  if (saved) t.id = saved.id; // replace temp numeric ID with real UUID
 }
 
 // Notifications
@@ -1833,13 +2040,16 @@ function resetPayModal(){
 }
 
 // Settings
-function openSetting(lbl,val,type,targetId){
-  settingTargetId=targetId;document.getElementById('m-set-title').textContent=`Rediger ${lbl.toLowerCase()}`;
+function openSetting(lbl,val,type,targetId,dbField){
+  settingTargetId=targetId;settingDbField=dbField||null;
+  document.getElementById('m-set-title').textContent=`Rediger ${lbl.toLowerCase()}`;
   document.getElementById('m-set-lbl').textContent=lbl;const inp=document.getElementById('m-set-inp');inp.type=type;inp.value=val;om('m-setting');
 }
 function saveSettingVal(){
   const v=document.getElementById('m-set-inp').value.trim();if(!v)return;
   if(settingTargetId){const el=document.getElementById(settingTargetId);if(el)el.textContent=v}
+  if(settingDbField==='location'||settingDbField==='timezone') sbSaveKennel({[settingDbField]:v});
+  else if(settingDbField) sbSaveProfile({[settingDbField]:v});
   cm('m-setting');showToast('Innstilling lagra ✓');
 }
 function testCamConnection(){
@@ -1863,7 +2073,6 @@ let fsRecActive = false;
 function openFullscreen() {
   const overlay = document.getElementById('fullscreen-overlay');
   overlay.style.display = 'flex';
-  // set binge name and status
   if (activeBinge) {
     document.getElementById('fs-binge-name').textContent = `${sanitize(activeBinge.name)} – ${sanitize(activeBinge.dog)}`;
     const st = document.getElementById('fs-status');
@@ -1871,6 +2080,21 @@ function openFullscreen() {
     st.style.background = activeBinge.open ? 'rgba(122,170,92,.2)' : 'rgba(184,92,74,.2)';
     st.style.color = activeBinge.open ? '#7aaa5c' : '#b85c4a';
     st.style.borderColor = activeBinge.open ? 'rgba(122,170,92,.3)' : 'rgba(184,92,74,.3)';
+    // Start camera stream
+    const imgEl   = document.getElementById('cam-mjpeg');
+    const videoEl = document.getElementById('cam-hls');
+    imgEl.style.display = 'none'; videoEl.style.display = 'none';
+    const url = activeBinge.camUrl;
+    if (url) {
+      if (activeBinge.camType === 'hls' || url.includes('.m3u8')) {
+        videoEl.style.display = 'block';
+        videoEl.src = url;
+        videoEl.play().catch(()=>{});
+      } else {
+        imgEl.style.display = 'block';
+        imgEl.src = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+      }
+    }
   }
   // start clock
   fsClockTimer = setInterval(() => {
@@ -1887,6 +2111,10 @@ function openFullscreen() {
 function closeFullscreen() {
   document.getElementById('fullscreen-overlay').style.display = 'none';
   clearInterval(fsClockTimer);
+  const imgEl = document.getElementById('cam-mjpeg');
+  const vidEl = document.getElementById('cam-hls');
+  if (imgEl) imgEl.src = '';
+  if (vidEl) { vidEl.pause(); vidEl.src = ''; }
   if (document.fullscreenElement || document.webkitFullscreenElement) {
     if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
@@ -1954,16 +2182,53 @@ function buildHwOpts(containerId, currentVal, onSelect) {
 function buildHwExtra(containerId, typeId) {
   const c = document.getElementById(containerId);
   if (!c) return;
-  if (typeId === 'wifi') {
-    c.innerHTML = `<div class="mfield"><div class="mlabel">WiFi-namn (SSID)</div><input type="text" class="minp" placeholder="t.d. KennelNett"></div><div class="mfield"><div class="mlabel">Einings-ID / IP</div><input type="text" class="minp" placeholder="192.168.1.xx eller auto"></div>`;
+  const isLuke = containerId.includes('luke');
+  const b = activeBinge;
+  const ip  = b ? (isLuke ? b.lukeIp  : b.spylIp)  : '';
+  const ch  = b ? (isLuke ? b.lukeCh  : b.spylCh)  : 0;
+  if (typeId === 'shelly') {
+    c.innerHTML = `
+      <div class="mfield"><div class="mlabel">IP-adresse til Shelly</div>
+        <input type="text" class="minp hw-ip" placeholder="192.168.1.100" value="${esc(ip)}">
+      </div>
+      <div class="mfield"><div class="mlabel">Relé-kanal (0 = første)</div>
+        <input type="number" class="minp hw-ch" placeholder="0" value="${ch}" min="0" max="3">
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Fungerer med Shelly 1, 1PM, Plus 1, Plus 1PM — både Gen1 og Gen2.</div>`;
+  } else if (typeId === 'sonoff') {
+    c.innerHTML = `
+      <div class="mfield"><div class="mlabel">IP-adresse til Sonoff (DIY-modus)</div>
+        <input type="text" class="minp hw-ip" placeholder="192.168.1.101" value="${esc(ip)}">
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Sonoff må vere i DIY-modus (LAN-kontroll aktivert i eWeLink-appen).</div>`;
+  } else if (typeId === 'wifi') {
+    const closeIp = b ? (isLuke ? b.lukeCloseUrl||'' : b.spylCloseUrl||'') : '';
+    c.innerHTML = `
+      <div class="mfield"><div class="mlabel">Opne-URL (HTTP GET)</div>
+        <input type="text" class="minp hw-open-url" placeholder="http://192.168.1.50/open" value="${esc(ip)}">
+      </div>
+      <div class="mfield"><div class="mlabel">Lukke-URL (HTTP GET)</div>
+        <input type="text" class="minp hw-close-url" placeholder="http://192.168.1.50/close" value="${esc(closeIp)}">
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Fungerer med alle einingar med HTTP-API: Tasmota, Tuya local, Arduino, Raspberry Pi, PLS med REST-API osb.</div>`;
   } else if (typeId === 'bt') {
-    c.innerHTML = `<div class="mfield"><div class="mlabel">Bluetooth-einingsnamn</div><input type="text" class="minp" placeholder="t.d. PawGate-BT-B1"></div><div style="font-size:11px;color:var(--muted)">Trykk "Søk etter einingar" for å finne eininga di automatisk.</div><button class="mbtn" style="margin-top:8px;width:100%" onclick="showToast('Søkjer etter Bluetooth-einingar...')">🔵 Søk etter einingar</button>`;
-  } else if (typeId === 'shelly' || typeId === 'sonoff') {
-    c.innerHTML = `<div class="mfield"><div class="mlabel">IP-adresse</div><input type="text" class="minp" placeholder="192.168.1.xx"></div>`;
+    c.innerHTML = `<div style="font-size:11px;color:var(--muted)">Bluetooth-tilkopling kjem i neste versjon av PawGate-modulen.</div>`;
   } else if (typeId === 'mqtt') {
-    c.innerHTML = `<div class="mfield"><div class="mlabel">MQTT Topic</div><input type="text" class="minp" placeholder="kennel/binge1/luke"></div>`;
+    const mqttTopic = b ? (isLuke ? b.lukeTopic||'' : b.spylTopic||'') : '';
+    const mqttPort  = b ? (isLuke ? b.lukePort||'1883' : b.spylPort||'1883') : '1883';
+    c.innerHTML = `
+      <div class="mfield"><div class="mlabel">Broker-adresse</div>
+        <input type="text" class="minp hw-ip" placeholder="192.168.1.10 eller mqtt.example.com" value="${esc(ip)}">
+      </div>
+      <div class="mfield"><div class="mlabel">Port (WebSocket)</div>
+        <input type="number" class="minp hw-port" placeholder="9001" value="${esc(mqttPort)}" min="1" max="65535">
+      </div>
+      <div class="mfield"><div class="mlabel">Topic</div>
+        <input type="text" class="minp hw-topic" placeholder="kennel/binge1/luke" value="${esc(mqttTopic)}">
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Fungerer med Mosquitto, HiveMQ, EMQX og alle PLS-ar med MQTT-støtte. Broker må ha WebSocket aktivert (port 9001 som standard).</div>`;
   } else if (typeId === 'gpio') {
-    c.innerHTML = `<div class="mfield"><div class="mlabel">GPIO Pin</div><input type="number" class="minp" placeholder="17" min="1" max="40"></div>`;
+    c.innerHTML = `<div class="mfield"><div class="mlabel">GPIO Pin</div><input type="number" class="minp hw-ch" placeholder="17" value="${ch||17}" min="1" max="40"></div>`;
   } else {
     c.innerHTML = '';
   }
@@ -1994,28 +2259,49 @@ document.addEventListener('click', e => {
   if (row.dataset.hw === 'spyl') { openSpylHw(); e.stopPropagation(); }
 });
 
+function _readHwExtras(prefix) {
+  const ip       = document.querySelector(`#${prefix}-extra .hw-ip`)?.value.trim() || '';
+  const ch       = parseInt(document.querySelector(`#${prefix}-extra .hw-ch`)?.value) || 0;
+  const openUrl  = document.querySelector(`#${prefix}-extra .hw-open-url`)?.value.trim() || '';
+  const closeUrl = document.querySelector(`#${prefix}-extra .hw-close-url`)?.value.trim() || '';
+  const topic    = document.querySelector(`#${prefix}-extra .hw-topic`)?.value.trim() || '';
+  const port     = document.querySelector(`#${prefix}-extra .hw-port`)?.value.trim() || '1883';
+  return { ip: openUrl || ip, ch, closeUrl, topic, port };
+}
 function saveHwLuke(global) {
   const label = hwTypes.find(t => t.id === selHwLuke)?.label || selHwLuke;
+  const { ip, ch, closeUrl, topic, port } = _readHwExtras('hw-luke');
   if (global) {
-    binges.forEach(b => b.lukeHw = selHwLuke);
+    binges.forEach(b => { b.lukeHw = selHwLuke; b.lukeIp = ip; b.lukeCh = ch; b.lukeCloseUrl = closeUrl; b.lukeTopic = topic; b.lukePort = port; sbSaveBinge(b); });
     document.getElementById('global-luke-sub').textContent = label;
     showToast(`Luketype sett til "${label}" på alle bingar ✓`);
     cm('m-hw-global-luke');
   } else {
-    if (activeBinge) { activeBinge.lukeHw = selHwLuke; document.getElementById('d-luke-hw').textContent = label; }
+    if (activeBinge) {
+      activeBinge.lukeHw = selHwLuke; activeBinge.lukeIp = ip; activeBinge.lukeCh = ch;
+      activeBinge.lukeCloseUrl = closeUrl; activeBinge.lukeTopic = topic; activeBinge.lukePort = port;
+      document.getElementById('d-luke-hw').textContent = label;
+      sbSaveBinge(activeBinge);
+    }
     showToast(`Luketype oppdatert: ${label} ✓`);
     cm('m-hw-luke');
   }
 }
 function saveHwSpyl(global) {
   const label = hwTypes.find(t => t.id === selHwSpyl)?.label || selHwSpyl;
+  const { ip, ch, closeUrl, topic, port } = _readHwExtras('hw-spyl');
   if (global) {
-    binges.forEach(b => b.spylHw = selHwSpyl);
+    binges.forEach(b => { b.spylHw = selHwSpyl; b.spylIp = ip; b.spylCh = ch; b.spylCloseUrl = closeUrl; b.spylTopic = topic; b.spylPort = port; sbSaveBinge(b); });
     document.getElementById('global-spyl-sub').textContent = label;
     showToast(`Spylesystem sett til "${label}" på alle bingar ✓`);
     cm('m-hw-global-spyl');
   } else {
-    if (activeBinge) { activeBinge.spylHw = selHwSpyl; document.getElementById('d-spyl-hw').textContent = label; }
+    if (activeBinge) {
+      activeBinge.spylHw = selHwSpyl; activeBinge.spylIp = ip; activeBinge.spylCh = ch;
+      activeBinge.spylCloseUrl = closeUrl; activeBinge.spylTopic = topic; activeBinge.spylPort = port;
+      document.getElementById('d-spyl-hw').textContent = label;
+      sbSaveBinge(activeBinge);
+    }
     showToast(`Spylesystem oppdatert: ${label} ✓`);
     cm('m-hw-spyl');
   }
@@ -2085,16 +2371,23 @@ function renderUsers() {
   if (sub) sub.textContent = `${users.length} aktive · ${pendingInvites.length} ventande`;
 }
 
-function sendInvite() {
+async function sendInvite() {
   const email = document.getElementById('inv-email').value.trim();
   const role  = document.getElementById('inv-role').value;
   if (!email) { showToast('Skriv inn e-post'); return; }
   if (users.find(u => u.email === email)) { showToast('Brukaren finst allereie'); return; }
+  showToast('Sender invitasjon...');
+  if (_sb) {
+    const { error } = await _sb.functions.invoke('invite-user', {
+      body: { email, kennel_id: _kennelId, role },
+    });
+    if (error) { showToast('Feil: ' + error.message); return; }
+  }
   pendingInvites.push({email, role});
   renderUsers();
   cm('m-invite');
   document.getElementById('inv-email').value = '';
-  showToast(`✉️ Invitasjon sendt til ${email}`);
+  showToast(`✉️ Invitasjon sendt til ${email} ✓`);
 }
 
 function cancelInvite(idx) {
@@ -2143,6 +2436,16 @@ function toggleSmartSw(el, id, label) {
   if (smartAlertState[id]) smartAlertState[id].on = isOn;
   updateSmartSubtexts();
   showToast(`${label} ${isOn ? 'på' : 'av'}`);
+  sbSaveProfile({smart_alerts: buildSmartAlertState()});
+}
+function buildSmartAlertState() {
+  return {
+    nospyl:  {on: document.getElementById('sw-nospyl')?.classList.contains('on'), hours: smartAlertState?.nospyl?.hours||12},
+    temp:    {on: document.getElementById('sw-temp')?.classList.contains('on'),   max: smartAlertState?.temp?.max||28, min: smartAlertState?.temp?.min||5},
+    lukefail: !!document.getElementById('sw-lukefail')?.classList.contains('on'),
+    camfail:  !!document.getElementById('sw-camfail')?.classList.contains('on'),
+    inact:   {on: document.getElementById('sw-inact')?.classList.contains('on'),  hours: smartAlertState?.inact?.hours||4},
+  };
 }
 
 function updateSmartSubtexts() {
@@ -2159,25 +2462,28 @@ function updateSmartSubtexts() {
 }
 
 function saveNoSpylLimit() {
-  const h = document.getElementById('nospyl-hours').value;
-  cm('m-smart-nospyl');
-  updateSmartSubtexts();
+  const h = parseInt(document.getElementById('nospyl-hours').value) || 12;
+  smartAlertState['sw-nospyl'] = {...(smartAlertState['sw-nospyl']||{}), hours: h};
+  cm('m-smart-nospyl'); updateSmartSubtexts();
   showToast(`Spylevarsel sett til ${h} timar ✓`);
+  sbSaveProfile({smart_alerts: buildSmartAlertState()});
 }
 
 function saveTempLimits() {
-  const max = document.getElementById('temp-max').value;
-  const min = document.getElementById('temp-min').value;
-  cm('m-smart-temp');
-  updateSmartSubtexts();
+  const max = parseInt(document.getElementById('temp-max').value) || 28;
+  const min = parseInt(document.getElementById('temp-min').value) || 5;
+  smartAlertState['sw-temp'] = {...(smartAlertState['sw-temp']||{}), max, min};
+  cm('m-smart-temp'); updateSmartSubtexts();
   showToast(`Temperaturgrenser: ${min}° – ${max}° ✓`);
+  sbSaveProfile({smart_alerts: buildSmartAlertState()});
 }
 
 function saveInactLimit() {
-  const h = document.getElementById('inact-hours').value;
-  cm('m-smart-inact');
-  updateSmartSubtexts();
+  const h = parseInt(document.getElementById('inact-hours').value) || 4;
+  smartAlertState['sw-inact'] = {...(smartAlertState['sw-inact']||{}), hours: h};
+  cm('m-smart-inact'); updateSmartSubtexts();
   showToast(`Rørsle-varsel sett til ${h} timar ✓`);
+  sbSaveProfile({smart_alerts: buildSmartAlertState()});
 }
 
 // ── Dog profile ──
@@ -2309,28 +2615,31 @@ function applyTheme(theme) {
   const root = document.getElementById('phone');
   if (!root) return;
   const isDark = theme.bg.startsWith('#1') || theme.bg.startsWith('#0') || (parseInt(theme.bg.slice(1,3),16) < 100);
-  root.style.setProperty('--bg',      theme.bg);
-  root.style.setProperty('--surface', theme.surface);
   const s2 = adjustBrightness(theme.surface, isDark ? 15 : -10);
-  root.style.setProperty('--surface2', s2);
-  root.style.setProperty('--accent',  theme.accent);
-  root.style.setProperty('--accent-bg', hexToRgba(theme.accent, .12));
-  root.style.setProperty('--open',    theme.open);
-  root.style.setProperty('--open-bg', hexToRgba(theme.open, .13));
-  root.style.setProperty('--water',   theme.water);
-  root.style.setProperty('--water-bg',hexToRgba(theme.water, .12));
-  root.style.setProperty('--closed',  theme.closed);
-  root.style.setProperty('--closed-bg',hexToRgba(theme.closed,.13));
-  if (isDark) {
-    root.style.setProperty('--text',   '#ede8dc');
-    root.style.setProperty('--muted',  '#8a8270');
-    root.style.setProperty('--border', '#3e3a32');
-    root.style.setProperty('--border2','#4e4a40');
-  } else {
-    root.style.setProperty('--text',   '#1a1612');
-    root.style.setProperty('--muted',  '#6a6458');
-    root.style.setProperty('--border', '#c8c0b0');
-    root.style.setProperty('--border2','#b0a898');
+  const textCol  = isDark ? '#ede8dc' : '#1a1612';
+  const mutedCol = isDark ? '#8a8270' : '#6a6458';
+  const borCol   = isDark ? '#3e3a32' : '#c8c0b0';
+  const bor2Col  = isDark ? '#4e4a40' : '#b0a898';
+  const vars = [
+    ['--bg',       theme.bg],
+    ['--surface',  theme.surface],
+    ['--surface2', s2],
+    ['--accent',   theme.accent],
+    ['--accent-bg',hexToRgba(theme.accent, .12)],
+    ['--open',     theme.open],
+    ['--open-bg',  hexToRgba(theme.open, .13)],
+    ['--water',    theme.water],
+    ['--water-bg', hexToRgba(theme.water, .12)],
+    ['--closed',   theme.closed],
+    ['--closed-bg',hexToRgba(theme.closed,.13)],
+    ['--text',     textCol],
+    ['--muted',    mutedCol],
+    ['--border',   borCol],
+    ['--border2',  bor2Col],
+  ];
+  for (const [k, v] of vars) {
+    root.style.setProperty(k, v);
+    document.body.style.setProperty(k, v);
   }
   // Propagate text color so SVG stroke:currentColor works correctly in all themes
   root.style.setProperty('color', 'var(--text)');
@@ -2338,6 +2647,7 @@ function applyTheme(theme) {
   currentThemeId = theme.id;
   document.getElementById('theme-current-sub').textContent = theme.name;
   updateThemeUI();
+  sbSaveProfile({theme_id: theme.id});
 }
 
 function applyCustomColor() {
@@ -3238,6 +3548,15 @@ function selectLang(code) {
   applyLanguage(code);
   cm('m-lang');
   showToast(lang.name + ' ✓');
+  sbSaveProfile({lang: code});
+}
+function setLang(code) {
+  currentLang = code;
+  const lang = languages.find(l => l.code === code);
+  if (lang) {
+    document.getElementById('lang-current-sub').textContent = lang.name;
+    applyLanguage(code);
+  }
 }
 
 // Init all modal UX
@@ -3251,12 +3570,23 @@ async function sbSaveBinge(b) {
     name: b.name, dog: b.dog, is_open: b.open,
     last_changed: b.lc, last_sprayed: b.ls,
     auto_open: b.ao, auto_close: b.ac,
+    luke_hw: b.lukeHw || 'pawgate', luke_ip: b.lukeIp || '', luke_channel: b.lukeCh ?? 0,
+    luke_close_url: b.lukeCloseUrl || '', luke_topic: b.lukeTopic || '', luke_port: b.lukePort || '1883',
+    spyl_hw: b.spylHw || 'pawgate', spyl_ip: b.spylIp || '', spyl_channel: b.spylCh ?? 0,
+    spyl_close_url: b.spylCloseUrl || '', spyl_topic: b.spylTopic || '', spyl_port: b.spylPort || '1883',
+    cam_url: b.camUrl || '', cam_type: b.camType || 'mjpeg',
   }).eq('id', b.id).then(({error}) => { if (error) console.warn('sbSaveBinge:', error.message); });
 }
-async function sbSaveKennel() {
+async function sbSaveKennel(extra) {
   if (!_sb || !_kennelId) return;
-  _sb.from('kennels').update({name: kennelName}).eq('id', _kennelId)
+  _sb.from('kennels').update({name: kennelName, ...extra}).eq('id', _kennelId)
     .then(({error}) => { if (error) console.warn('sbSaveKennel:', error.message); });
+}
+let _profileId = null;
+async function sbSaveProfile(fields) {
+  if (!_sb || !_profileId) return;
+  _sb.from('profiles').update(fields).eq('id', _profileId)
+    .then(({error}) => { if (error) console.warn('sbSaveProfile:', error.message); });
 }
 async function sbInsertBinge(b) {
   if (!_sb || !_kennelId) return null;
@@ -3268,9 +3598,27 @@ async function sbInsertBinge(b) {
   return data;
 }
 function sbDeleteBinge(id) {
-  if (!_sb || typeof id === 'number') return; // skip local fake IDs
+  if (!_sb || typeof id === 'number') return;
   _sb.from('binges').delete().eq('id', id)
     .then(({error}) => { if (error) console.warn('sbDeleteBinge:', error.message); });
+}
+async function sbInsertTask(t) {
+  if (!_sb || !_kennelId) return null;
+  const {data, error} = await _sb.from('tasks').insert({
+    kennel_id: _kennelId, title: t.title, date: t.date, time: t.time||'', tag: t.tag||'routine', done: false,
+  }).select().single();
+  if (error) { console.warn('sbInsertTask:', error.message); return null; }
+  return data;
+}
+function sbUpdateTask(t) {
+  if (!_sb || !t.id || typeof t.id === 'number') return;
+  _sb.from('tasks').update({title:t.title,date:t.date,time:t.time,tag:t.tag,done:t.done}).eq('id',t.id)
+    .then(({error})=>{ if(error) console.warn('sbUpdateTask:',error.message); });
+}
+function sbDeleteTask(id) {
+  if (!_sb || typeof id === 'number') return;
+  _sb.from('tasks').delete().eq('id',id)
+    .then(({error})=>{ if(error) console.warn('sbDeleteTask:',error.message); });
 }
 
 function dsActive(id) {
@@ -3362,19 +3710,58 @@ function dsActive(id) {
 // ── App init: check existing session or show auth ──
 async function initPawGate() {
   if (!_sb) {
-    // Supabase not configured → bypass auth, show app with demo data
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('phone').style.display        = '';
     document.getElementById('page-header').style.display  = '';
     return;
   }
-  const { data: { session } } = await _sb.auth.getSession();
-  if (session) {
-    await afterSignIn(session.user);
+  // Try restoring a remembered session from localStorage
+  const saved = localStorage.getItem('pg_session');
+  if (saved) {
+    try {
+      const { access_token, refresh_token } = JSON.parse(saved);
+      const { data, error } = await _sb.auth.setSession({ access_token, refresh_token });
+      if (!error && data.user) {
+        // Refresh the stored tokens (they may have rotated)
+        localStorage.setItem('pg_session', JSON.stringify({
+          access_token:  data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        }));
+        await afterSignIn(data.user);
+        return;
+      }
+    } catch(e) {}
+    localStorage.removeItem('pg_session'); // invalid/expired — clear it
   }
-  // No session → auth screen stays visible, phone stays hidden
+  // No remembered session → show login screen
 }
 initPawGate();
+
+function confirmSpray(id, btn) {
+  window._pendingSpray = {id, btn};
+  om('m-confirm-spray');
+}
+function doConfirmedSpray() {
+  cm('m-confirm-spray');
+  const p = window._pendingSpray;
+  window._pendingSpray = null;
+  if (!p) return;
+  if (p.id !== undefined) quickSpray(p.id, p.btn);
+  else triggerSpray();
+}
 </script>
+
+<div class="modal-back hidden" id="m-confirm-spray">
+  <div class="omodal" style="max-width:320px;text-align:center">
+    <div class="mhdr"><div class="mtitle">Start spyling?</div></div>
+    <div class="mbody" style="gap:16px">
+      <p style="color:var(--muted);font-size:14px;margin:0">Er du sikker på at du vil starte spyling no?</p>
+      <div class="mactions">
+        <button class="mbtn" onclick="cm('m-confirm-spray')">Avbryt</button>
+        <button class="mbtn prim" onclick="doConfirmedSpray()">Start spyling</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
