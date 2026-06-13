@@ -29,7 +29,9 @@ function createWindow() {
 
   mainWin.once('ready-to-show', () => mainWin.show());
 
-  mainWin.loadFile(path.join(__dirname, '..', 'pawgate', 'public', 'index.html'));
+  mainWin.loadFile(path.join(__dirname, '..', 'pawgate', 'public', 'index.html'), {
+    query: { electron: '1' },
+  });
 
   mainWin.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https:') || url.startsWith('http:')) {
@@ -72,6 +74,10 @@ autoUpdater.on('update-downloaded', (info) => {
 
 ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall();
+});
+
+ipcMain.on('get-app-version', (event) => {
+  event.returnValue = app.getVersion();
 });
 
 // ── App lifecycle ──
