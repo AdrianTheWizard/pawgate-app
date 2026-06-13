@@ -26,15 +26,15 @@
     "@capacitor/keyboard": "^6.0.0",
     "@capacitor/local-notifications": "^6.0.0",
     "@capacitor/network": "^6.0.0",
-    "@capacitor/status-bar": "^6.0.0"
+    "@capacitor/status-bar": "^6.0.0",
+    "electron-updater": "^6.8.9"
   },
   "devDependencies": {
     "@capacitor/android": "^6.0.0",
     "@capacitor/cli": "^6.0.0",
     "@capacitor/ios": "^6.0.0",
     "electron": "^31.0.0",
-    "electron-builder": "^24.13.0",
-    "electron-updater": "^6.8.9"
+    "electron-builder": "^24.13.0"
   },
   "build": {
     "appId": "com.pawgate.app",
