@@ -1051,8 +1051,13 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-add">
   <div class="modal">
     <div class="modal-title">Legg til binge</div>
-    <div class="mfield"><div class="mlabel">Bingenamn</div><input type="text" class="minp" id="add-bname"></div>
-    <div class="mfield"><div class="mlabel">Hundens namn</div><input type="text" class="minp" id="add-dname"></div>
+    <div class="mfield"><div class="mlabel">Bingenamn</div><input type="text" class="minp" id="add-bname" placeholder="t.d. Binge 1"></div>
+    <div class="mfield"><div class="mlabel">Hundens namn</div><input type="text" class="minp" id="add-dname" placeholder="t.d. Rex"></div>
+    <div class="mfield">
+      <div class="mlabel">Hundeluke</div>
+      <div id="add-hw-opts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px"></div>
+    </div>
+    <div id="add-hw-extra" style="margin-top:4px"></div>
     <div class="mactions"><button class="mbtn" onclick="cm('m-add')">Avbryt</button><button class="mbtn prim" onclick="addBinge()">Legg til</button></div>
   </div>
 </div>
@@ -1921,12 +1926,30 @@ function saveName(){
 function deleteBinge(){
   if(!activeBinge)return;const _did=activeBinge.id;binges=binges.filter(b=>b.id!==_did);activeBinge=null;renderList();cm('m-name');gb();showToast('Binge sletta');sbDeleteBinge(_did);
 }
-function openAddBinge(){document.getElementById('add-bname').value=`Binge ${binges.length+1}`;document.getElementById('add-dname').value='';om('m-add')}
-function addBinge(){
-  const n=document.getElementById('add-bname').value.trim();const d=document.getElementById('add-dname').value.trim();if(!n)return;
-  const b={id:nextId++,name:n,dog:d||'–',open:false,lc:'No',ls:'–',st:[{t:'07:30',label:'Morgon',enabled:true,active:true},{t:'12:00',label:'Middag',enabled:true,active:false},{t:'18:00',label:'Kveld',enabled:true,active:false}],ao:'07:00',ac:'21:00',cam:`Kamera ${binges.length+1} – ${n}`,spraying:false};
-  binges.push(b);renderList();openDetail(b.id);cm('m-add');showToast(`${n} lagt til ✓`);
-  sbInsertBinge(b).then(row => { if(row) b.id = row.id; });
+let _addHwSel = 'pawgate';
+function openAddBinge() {
+  document.getElementById('add-bname').value = `Binge ${binges.length+1}`;
+  document.getElementById('add-dname').value = '';
+  _addHwSel = 'pawgate';
+  buildHwOpts('add-hw-opts', _addHwSel, v => { _addHwSel = v; buildHwExtra('add-hw-extra', _addHwSel); });
+  buildHwExtra('add-hw-extra', _addHwSel);
+  om('m-add');
+}
+function addBinge() {
+  const n = document.getElementById('add-bname').value.trim();
+  const d = document.getElementById('add-dname').value.trim();
+  if (!n) return;
+  const { ip, ch, closeUrl, topic, port } = _readHwExtras('add-hw');
+  const b = {
+    id: nextId++, name: n, dog: d||'–', open: false, lc: 'No', ls: '–',
+    st: [{t:'07:30',label:'Morgon',enabled:true,active:true},{t:'12:00',label:'Middag',enabled:true,active:false},{t:'18:00',label:'Kveld',enabled:true,active:false}],
+    ao: '07:00', ac: '21:00', cam: `Kamera ${binges.length+1} – ${n}`, spraying: false,
+    lukeHw: _addHwSel, lukeIp: ip, lukeCh: ch, lukeCloseUrl: closeUrl, lukeTopic: topic, lukePort: port,
+    spylHw: 'pawgate', spylIp: '', spylCh: 0, spylCloseUrl: '', spylTopic: '', spylPort: '1883',
+    camUrl: '', camType: 'mjpeg',
+  };
+  binges.push(b); renderList(); openDetail(b.id); cm('m-add'); showToast(`${n} lagt til ✓`);
+  sbInsertBinge(b).then(row => { if (row) { b.id = row.id; sbSaveBinge(b); } });
 }
 
 // Calendar
