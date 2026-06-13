@@ -76,9 +76,18 @@ ipcMain.on('install-update', () => {
 
 // ── App lifecycle ──
 
+function checkForUpdates() {
+  autoUpdater.checkForUpdates().catch((err) => {
+    console.log('[updater] check failed:', err.message);
+  });
+}
+
 app.whenReady().then(() => {
   createWindow();
-  setTimeout(() => autoUpdater.checkForUpdates().catch(() => {}), 5000);
+  // First check after 8s (give renderer time to register listeners)
+  setTimeout(checkForUpdates, 8000);
+  // Re-check every 4 hours
+  setInterval(checkForUpdates, 4 * 60 * 60 * 1000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

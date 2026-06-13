@@ -4065,9 +4065,9 @@ function tutDone() {
   localStorage.setItem('pg_tutorial_done', '1');
 }
 
-// Vises kun ved eksplisitt kall fra Innstillinger → Hjelp
+// Vises automatisk ved første innlogging
 function maybeShowTutorial() {
-  // Ikke auto-vis — brukeren starter selv fra innstillinger
+  if (!localStorage.getItem('pg_tutorial_done')) setTimeout(tutStart, 1000);
 }
 
 // ── Auto-update ──
