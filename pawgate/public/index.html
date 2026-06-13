@@ -1712,6 +1712,31 @@ function hwTag(b) {
 
 function renderList(){
   const list=document.getElementById('binge-list');list.innerHTML='';
+
+  // Basis plan: no binge access — show upgrade card
+  if (_plan === 'basis') {
+    list.innerHTML = `
+      <div style="margin:24px 0;background:linear-gradient(135deg,#1a1204 0%,#2d2008 100%);border:1px solid #3a2e18;border-radius:18px;padding:28px 22px;text-align:center">
+        <div style="font-size:38px;margin-bottom:10px">🔒</div>
+        <div style="font-size:17px;font-weight:700;color:#f0ece0;margin-bottom:6px">PawGate Pro kreves</div>
+        <div style="font-size:13px;color:#9a8866;line-height:1.6;margin-bottom:20px">Binger, hardware-styring og kamera er kun tilgjengelig med Pro-abonnement.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:20px;text-align:left">
+          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Ubegrenset binger</div>
+          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Automatiske timere</div>
+          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Opptil 10 brukere</div>
+          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Kalender og oppgaver</div>
+          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Smarte varsler</div>
+          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Live kamera</div>
+        </div>
+        <button onclick="showUpgrade('binger')" style="width:100%;padding:14px;border-radius:12px;border:none;background:#d4a847;color:#1a1204;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+          Kjøp Pro — 399 kr/mnd
+        </button>
+        <div style="font-size:11px;color:#6a5c44;margin-top:10px">Ingen binding · Si opp når som helst</div>
+      </div>`;
+    updateCounts();
+    return;
+  }
+
   binges.forEach((b,idx)=>{
     const card=document.createElement('div');
     card.className='binge-card';
@@ -1977,7 +2002,7 @@ function deleteBinge(){
 }
 let _addHwSel = 'pawgate';
 function openAddBinge() {
-  if (_plan === 'basis' && binges.length >= 3) { showUpgrade('binger'); return; }
+  if (_plan === 'basis') { showUpgrade('binger'); return; }
   document.getElementById('add-bname').value = `Binge ${binges.length+1}`;
   document.getElementById('add-dname').value = '';
   _addHwSel = 'pawgate';
@@ -3839,29 +3864,34 @@ function doConfirmedSpray() {
 
 <!-- ── Oppgrader plan ── -->
 <div class="modal-back hidden" id="m-upgrade">
-  <div class="omodal" style="max-width:340px;text-align:center">
-    <div class="mhdr" style="justify-content:center">
-      <div>
-        <div style="font-size:32px;margin-bottom:6px">🔒</div>
-        <div class="mtitle" id="upgrade-title">Pro-funksjon</div>
-        <div class="msub" id="upgrade-desc" style="margin-top:4px"></div>
+  <div class="omodal" style="max-width:360px;overflow:hidden;padding:0">
+    <div style="background:linear-gradient(135deg,#1a1204 0%,#2d2008 100%);padding:24px 24px 20px;text-align:center">
+      <div style="font-size:11px;color:#d4a847;font-family:'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px">PawGate Pro</div>
+      <div style="font-size:36px;font-weight:800;color:#f0ece0;line-height:1" id="upgrade-title">Oppgrader</div>
+      <div style="font-size:13px;color:#9a8866;margin-top:8px;line-height:1.5" id="upgrade-desc">Lås opp alle funksjoner</div>
+      <div style="margin-top:16px;display:flex;align-items:baseline;justify-content:center;gap:4px">
+        <span style="font-size:34px;font-weight:800;color:#d4a847">399</span>
+        <span style="font-size:14px;color:#9a8866">kr / mnd</span>
       </div>
+      <div style="font-size:11px;color:#6a5c44;margin-top:4px">Ingen binding · Si opp når som helst</div>
     </div>
-    <div class="mbody" style="gap:12px;align-items:center">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;width:100%;text-align:left">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.05em">PRO — 399 KR/MND</div>
-        <div style="font-size:13px;color:var(--text);line-height:1.7">
-          ✓ Ubegrenset binger<br>
-          ✓ Automatiske timere<br>
-          ✓ Flerbruker<br>
-          ✓ Kalender og oppgaver<br>
-          ✓ Live kamera
+    <div style="padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px">
+          <div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><span style="color:#d4a847;font-size:14px">✓</span> Ubegrenset binger</div>
+          <div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><span style="color:#d4a847;font-size:14px">✓</span> Automatiske timere</div>
+          <div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><span style="color:#d4a847;font-size:14px">✓</span> Opptil 10 brukere</div>
+          <div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><span style="color:#d4a847;font-size:14px">✓</span> Kalender og oppgaver</div>
+          <div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><span style="color:#d4a847;font-size:14px">✓</span> Smarte varsler</div>
+          <div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><span style="color:#d4a847;font-size:14px">✓</span> Live kamera</div>
         </div>
       </div>
-      <div class="mactions" style="width:100%">
-        <button class="mbtn" onclick="cm('m-upgrade')">Ikke nå</button>
-        <button class="mbtn prim" onclick="cm('m-upgrade');gs('screen-settings')">Oppgrader</button>
-      </div>
+      <button id="checkout-btn" onclick="startStripeCheckout()" style="width:100%;padding:14px;border-radius:12px;border:none;background:#d4a847;color:#1a1204;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+        Kjøp Pro — 399 kr/mnd
+      </button>
+      <button onclick="cm('m-upgrade')" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit">
+        Ikke nå
+      </button>
     </div>
   </div>
 </div>
@@ -3928,7 +3958,35 @@ function showUpgrade(feature) {
   const t = _upgradeTexts[feature] || { title: 'Pro-funksjon', desc: 'Tilgjengelig med Pro-planen.' };
   document.getElementById('upgrade-title').textContent = t.title;
   document.getElementById('upgrade-desc').textContent  = t.desc;
+  const btn = document.getElementById('checkout-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'Kjøp Pro — 399 kr/mnd'; }
   document.getElementById('m-upgrade').classList.add('show');
+}
+
+async function startStripeCheckout() {
+  if (!_sb) { showToast('Ikke tilkoblet. Prøv igjen.'); return; }
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) { showToast('Logg inn for å kjøpe'); return; }
+  const btn = document.getElementById('checkout-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Henter betalingsside…'; }
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ plan: 'pro' }),
+    });
+    const data = await resp.json();
+    if (data.url) {
+      window.open(data.url, '_blank');
+      cm('m-upgrade');
+    } else {
+      showToast('Noe gikk galt. Prøv igjen.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Kjøp Pro — 399 kr/mnd'; }
+    }
+  } catch(e) {
+    showToast('Noe gikk galt. Sjekk nettilkobling.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Kjøp Pro — 399 kr/mnd'; }
+  }
 }
 
 // Patch invite buttons to respect plan
