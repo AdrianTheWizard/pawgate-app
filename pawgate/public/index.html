@@ -4007,9 +4007,9 @@ function tutDone() {
   localStorage.setItem('pg_tutorial_done', '1');
 }
 
-// Vises kun etter innlogging (kalles fra onUser etter loadFromCloud)
+// Vises kun ved eksplisitt kall fra Innstillinger → Hjelp
 function maybeShowTutorial() {
-  if (!localStorage.getItem('pg_tutorial_done')) setTimeout(tutStart, 800);
+  // Ikke auto-vis — brukeren starter selv fra innstillinger
 }
 
 // ── Auto-update ──
