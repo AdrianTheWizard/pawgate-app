@@ -3867,21 +3867,19 @@ function doConfirmedSpray() {
 </div>
 
 <!-- ── Tutorial ── -->
-<div id="tutorial-overlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#000a;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;width:320px;overflow:hidden;box-shadow:0 20px 60px #000c">
-    <div style="background:var(--accent);padding:20px 22px 16px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="display:flex;gap:6px" id="tut-dots"></div>
-        <button onclick="tutSkip()" style="background:transparent;border:none;color:#ffffffaa;font-size:12px;cursor:pointer;padding:0">Hopp over</button>
+<div id="tutorial-overlay" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.78);backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:20px;width:420px;max-width:100%;overflow:hidden;box-shadow:0 28px 80px #000f">
+    <div id="tut-visual"></div>
+    <div style="padding:16px 20px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="display:flex;gap:5px;align-items:center" id="tut-dots"></div>
+        <button onclick="tutSkip()" style="background:transparent;border:none;color:#666;font-size:12px;cursor:pointer;padding:0;font-family:inherit">Hopp over</button>
       </div>
-      <div style="font-size:28px;margin-bottom:6px" id="tut-icon"></div>
-      <div style="color:#fff;font-size:17px;font-weight:700;line-height:1.3" id="tut-title"></div>
-    </div>
-    <div style="padding:18px 22px 20px">
-      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px" id="tut-body"></div>
-      <div style="display:flex;gap:10px">
-        <button id="tut-back-btn" onclick="tutStep(-1)" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:14px">Tilbake</button>
-        <button id="tut-next-btn" onclick="tutStep(1)" style="flex:2;padding:10px;border-radius:10px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:14px;font-weight:600">Neste →</button>
+      <div style="font-size:15px;font-weight:700;color:#f0ece0;margin-bottom:6px;line-height:1.3" id="tut-title"></div>
+      <div style="font-size:13px;color:#888;line-height:1.65;margin-bottom:18px" id="tut-body"></div>
+      <div style="display:flex;gap:8px">
+        <button id="tut-back-btn" onclick="tutStep(-1)" style="flex:1;padding:10px;border-radius:10px;border:1px solid #2e2c28;background:transparent;color:#888;cursor:pointer;font-size:13px;font-family:inherit">← Tilbake</button>
+        <button id="tut-next-btn" onclick="tutStep(1)" style="flex:2;padding:10px;border-radius:10px;border:none;background:#d4a847;color:#1a1204;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit">Neste →</button>
       </div>
     </div>
   </div>
@@ -3942,12 +3940,36 @@ function om(id) {
 
 // ── Tutorial ──
 const tutSteps = [
-  { icon: '👋', title: 'Velkommen til PawGate!', body: 'PawGate gir deg full oversikt og kontroll over kennel. La oss vise deg det viktigste på 30 sekunder.' },
-  { icon: '🐕', title: 'Binger', body: 'Hver hund har sin egen binge. Trykk på en binge for å se status, åpne og lukke luken, eller starte spyling.' },
-  { icon: '🔧', title: 'Koble til hardware', body: 'Gå inn på en binge → hold på hardware-raden for å koble til din hundeluke. Støtter Shelly, Sonoff, MQTT, WiFi-reléer og mer.' },
-  { icon: '📷', title: 'Kamera', body: 'Trykk på kamera-ikonet på en binge for å se live-bilde. Støtter MJPEG, HLS og RTSP (via proxy).' },
-  { icon: '📅', title: 'Kalender og oppgaver', body: 'Hold oversikt over daglig arbeid — vaksinering, rengjøring, veterinærtimer. Tilgjengelig med Pro-planen.' },
-  { icon: '⚙️', title: 'Innstillinger', body: 'Under Innstillinger finner du tema, varsler, brukere og mer. Du kan alltid finne denne guiden igjen der. Ha det gøy med PawGate!' },
+  {
+    title: 'Velkommen til PawGate!',
+    body: 'PawGate gir deg full oversikt og kontroll over kennel. La oss vise deg det viktigste på under ett minutt.',
+    visual: `<div style="background:linear-gradient(150deg,#1a1204 0%,#2a1e08 100%);padding:36px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:170px"><div style="font-size:52px;margin-bottom:12px">🐾</div><div style="color:#d4a847;font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:.12em">PAWGATE</div><div style="color:#ffffff44;font-size:12px;margin-top:8px;font-family:'IBM Plex Mono',monospace">Smart kennelstyring</div></div>`,
+  },
+  {
+    title: 'Binger — din oversikt',
+    body: 'Hver hund har sin egen binge. Trykk «Lukk» eller «Åpne» for å styre luken manuelt, og «Spyl» for å starte spyling. Trykk på 📷 for live kamera.',
+    visual: `<div style="background:#131210;padding:14px 14px 8px"><div style="font-size:10px;color:#d4a847;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Oversikt</div><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:11px;padding:12px 13px 10px;margin-bottom:7px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="color:#f0ece0;font-size:13px;font-weight:600">Binge 1</div><div style="color:#888;font-size:11px">Bella · Border Collie</div></div><div style="background:#16a34a22;color:#4ade80;font-size:9px;padding:3px 9px;border-radius:99px;border:1px solid #16a34a44;font-family:monospace">ÅPEN</div></div><div style="display:flex;gap:5px"><div style="flex:1;padding:6px 0;background:#d4a84715;border:1px solid #d4a84740;border-radius:7px;color:#d4a847;font-size:11px;text-align:center">Lukk</div><div style="flex:1;padding:6px 0;background:#d4a847;border-radius:7px;color:#1a1204;font-size:11px;text-align:center;font-weight:600">Spyl</div><div style="padding:6px 12px;background:#2a2826;border:1px solid #3a3836;border-radius:7px;font-size:12px">📷</div></div></div><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:11px;padding:12px 13px 10px;opacity:.5"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="color:#f0ece0;font-size:13px;font-weight:600">Binge 2</div><div style="color:#888;font-size:11px">Luna · Berner</div></div><div style="background:#dc262622;color:#f87171;font-size:9px;padding:3px 9px;border-radius:99px;border:1px solid #dc262644;font-family:monospace">LUKKA</div></div><div style="display:flex;gap:5px"><div style="flex:1;padding:6px 0;background:#d4a847;border-radius:7px;color:#1a1204;font-size:11px;text-align:center;font-weight:600">Åpne</div><div style="flex:1;padding:6px 0;background:#d4a84715;border:1px solid #d4a84740;border-radius:7px;color:#d4a847;font-size:11px;text-align:center">Spyl</div><div style="padding:6px 12px;background:#2a2826;border:1px solid #3a3836;border-radius:7px;font-size:12px">📷</div></div></div></div>`,
+  },
+  {
+    title: 'Koble til hardware',
+    body: 'Trykk på en binge og velg «Hardware». Velg protokoll — WiFi, Shelly eller MQTT — og skriv inn IP-adressen til enheten. Appen lagrer og tester tilkoblingen.',
+    visual: `<div style="background:#131210;padding:14px"><div style="font-size:10px;color:#d4a847;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Hundeluke — Koble til</div><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:11px;padding:12px 13px"><div style="display:flex;gap:5px;margin-bottom:10px"><div style="padding:5px 11px;background:#d4a847;color:#1a1204;border-radius:6px;font-size:11px;font-weight:700">WiFi</div><div style="padding:5px 11px;background:#2a2826;border:1px solid #3a3836;color:#888;border-radius:6px;font-size:11px">MQTT</div><div style="padding:5px 11px;background:#2a2826;border:1px solid #3a3836;color:#888;border-radius:6px;font-size:11px">Shelly</div></div><div style="margin-bottom:8px"><div style="font-size:10px;color:#666;margin-bottom:3px;font-family:monospace">Åpne URL</div><div style="background:#131210;border:1px solid #2e2c28;border-radius:7px;padding:7px 10px;color:#d4a847;font-size:11px;font-family:monospace">http://192.168.1.10/relay/0/on</div></div><div><div style="font-size:10px;color:#666;margin-bottom:3px;font-family:monospace">Lukke URL</div><div style="background:#131210;border:1px solid #2e2c28;border-radius:7px;padding:7px 10px;color:#888;font-size:11px;font-family:monospace">http://192.168.1.10/relay/0/off</div></div></div></div>`,
+  },
+  {
+    title: 'Live kamera',
+    body: 'Trykk på 📷 på en binge for å se live-bildet. Under bingeinnstillinger legger du inn kamera-URL og velger type. Støtter MJPEG, HLS og RTSP-strømmer.',
+    visual: `<div style="background:#0c0b0a;padding:14px"><div style="font-size:10px;color:#d4a847;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Live kamera · Binge 1</div><div style="background:#111;border:1px solid #2e2c28;border-radius:11px;overflow:hidden;position:relative"><div style="height:110px;background:linear-gradient(160deg,#0f0f0f 0%,#1a1a14 100%);display:flex;align-items:center;justify-content:center"><div style="text-align:center"><div style="font-size:34px;opacity:.15">📷</div><div style="color:#444;font-size:10px;margin-top:6px;font-family:monospace">mjpeg://192.168.1.50</div></div></div><div style="position:absolute;top:9px;left:9px;background:#dc2626;color:#fff;font-size:8px;padding:2px 7px;border-radius:99px;display:flex;align-items:center;gap:3px;font-family:monospace;font-weight:700"><div style="width:4px;height:4px;border-radius:50%;background:#fff"></div>LIVE</div><div style="padding:8px 12px;display:flex;justify-content:space-between;background:#161512"><div style="color:#888;font-size:11px">Binge 1</div><div style="color:#d4a847;font-size:11px;font-family:monospace">MJPEG</div></div></div></div>`,
+  },
+  {
+    title: 'Kalender og oppgaver',
+    body: 'Hold oversikt over daglig arbeid — vaksinering, rengjøring, veterinærtimer. Tildel oppgaver til ansatte og merk dem som fullført. Kun tilgjengelig med Pro.',
+    visual: `<div style="background:#131210;padding:14px"><div style="font-size:10px;color:#d4a847;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Oppgaver — i dag</div><div style="display:flex;flex-direction:column;gap:5px"><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:9px;opacity:.55"><div style="width:15px;height:15px;border-radius:4px;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;color:#fff">✓</div><div><div style="color:#888;font-size:12px;text-decoration:line-through">Vaksinering · Bella</div><div style="color:#555;font-size:10px;font-family:monospace">08:00</div></div></div><div style="background:#1e1c18;border:1px solid #d4a84745;border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:9px"><div style="width:15px;height:15px;border-radius:4px;border:1.5px solid #d4a847;flex-shrink:0"></div><div><div style="color:#f0ece0;font-size:12px">Rengjøring · Binge 1–3</div><div style="color:#888;font-size:10px;font-family:monospace">14:00</div></div></div><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:9px"><div style="width:15px;height:15px;border-radius:4px;border:1.5px solid #444;flex-shrink:0"></div><div><div style="color:#aaa;font-size:12px">Veterinærtime · Luna</div><div style="color:#555;font-size:10px;font-family:monospace">I morgen</div></div></div></div></div>`,
+  },
+  {
+    title: 'Du er klar!',
+    body: 'Det var det viktigste. Under Innstillinger finner du tema, varsler, brukere og mer. Du kan alltid starte denne guiden på nytt fra Innstillinger → Hjelp.',
+    visual: `<div style="background:#131210;padding:14px"><div style="font-size:10px;color:#d4a847;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Innstillinger</div><div style="display:flex;flex-direction:column;gap:5px"><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:9px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between"><span style="color:#f0ece0;font-size:13px">Tema</span><span style="color:#888;font-size:12px">Mørkt ›</span></div><div style="background:#1e1c18;border:1px solid #2e2c28;border-radius:9px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between"><span style="color:#f0ece0;font-size:13px">Varsler</span><div style="background:#d4a847;width:32px;height:18px;border-radius:99px;position:relative;flex-shrink:0"><div style="position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff"></div></div></div><div style="background:#1e1c18;border:1px solid #d4a84750;border-radius:9px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between"><span style="color:#d4a847;font-size:13px">Hjelp og tutorial</span><span style="color:#d4a847;font-size:12px">Start på nytt ›</span></div></div></div>`,
+  },
 ];
 let _tutIdx = 0;
 
@@ -3959,16 +3981,15 @@ function tutStart() {
 
 function tutRender() {
   const s = tutSteps[_tutIdx];
-  document.getElementById('tut-icon').textContent  = s.icon;
+  document.getElementById('tut-visual').innerHTML = s.visual;
   document.getElementById('tut-title').textContent = s.title;
   document.getElementById('tut-body').textContent  = s.body;
   document.getElementById('tut-back-btn').style.display = _tutIdx === 0 ? 'none' : '';
   const nextBtn = document.getElementById('tut-next-btn');
   nextBtn.textContent = _tutIdx === tutSteps.length - 1 ? 'Kom i gang ✓' : 'Neste →';
-  // dots
   const dots = document.getElementById('tut-dots');
   dots.innerHTML = tutSteps.map((_, i) =>
-    `<div style="width:${i===_tutIdx?'20':'8'}px;height:8px;border-radius:99px;background:${i===_tutIdx?'#fff':'#ffffff55'};transition:all .2s"></div>`
+    `<div style="width:${i===_tutIdx?'20':'7'}px;height:7px;border-radius:99px;background:${i===_tutIdx?'#d4a847':'#3a3836'};transition:all .2s"></div>`
   ).join('');
 }
 
@@ -3986,7 +4007,7 @@ function tutDone() {
   localStorage.setItem('pg_tutorial_done', '1');
 }
 
-// Show tutorial on first login (called after loadFromCloud)
+// Vises kun etter innlogging (kalles fra onUser etter loadFromCloud)
 function maybeShowTutorial() {
   if (!localStorage.getItem('pg_tutorial_done')) setTimeout(tutStart, 800);
 }
