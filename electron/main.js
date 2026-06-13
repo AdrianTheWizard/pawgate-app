@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, nativeTheme, dialog } = require('electron');
+const { app, BrowserWindow, shell, nativeTheme, ipcMain } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 
@@ -7,8 +7,10 @@ nativeTheme.themeSource = 'dark';
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
 
+let mainWin = null;
+
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWin = new BrowserWindow({
     width: 1100,
     height: 820,
     minWidth: 820,
@@ -20,41 +22,62 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       webSecurity: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
     show: false,
   });
 
-  win.once('ready-to-show', () => win.show());
+  mainWin.once('ready-to-show', () => mainWin.show());
 
-  win.loadFile(path.join(__dirname, '..', 'pawgate', 'public', 'index.html'));
+  mainWin.loadFile(path.join(__dirname, '..', 'pawgate', 'public', 'index.html'));
 
-  win.webContents.setWindowOpenHandler(({ url }) => {
+  mainWin.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https:') || url.startsWith('http:')) {
       shell.openExternal(url);
     }
     return { action: 'deny' };
   });
 
-  win.setMenuBarVisibility(false);
-
-  autoUpdater.on('update-downloaded', () => {
-    dialog.showMessageBox(win, {
-      type: 'info',
-      title: 'PawGate-oppdatering klar',
-      message: 'Ei ny versjon er lasta ned.\nStart PawGate på nytt for å installere oppdateringa.',
-      buttons: ['Start på nytt no', 'Seinare'],
-      defaultId: 0,
-    }).then(result => {
-      if (result.response === 0) autoUpdater.quitAndInstall();
-    });
-  });
-
-  return win;
+  mainWin.setMenuBarVisibility(false);
 }
+
+// ── Auto-updater events → renderer ──
+
+autoUpdater.on('update-available', (info) => {
+  if (!mainWin) return;
+  // Normalise release notes to plain text
+  let notes = '';
+  if (Array.isArray(info.releaseNotes)) {
+    notes = info.releaseNotes.map(n => n.note || n).join('\n');
+  } else if (typeof info.releaseNotes === 'string') {
+    notes = info.releaseNotes;
+  }
+  mainWin.webContents.send('update-available', {
+    version: info.version,
+    notes,
+  });
+});
+
+autoUpdater.on('download-progress', (prog) => {
+  if (mainWin) mainWin.webContents.send('download-progress', {
+    percent: Math.round(prog.percent),
+    transferred: prog.transferred,
+    total: prog.total,
+  });
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  if (mainWin) mainWin.webContents.send('update-downloaded', { version: info.version });
+});
+
+ipcMain.on('install-update', () => {
+  autoUpdater.quitAndInstall();
+});
+
+// ── App lifecycle ──
 
 app.whenReady().then(() => {
   createWindow();
-  // Check for updates 5 seconds after launch (give the window time to load)
   setTimeout(() => autoUpdater.checkForUpdates().catch(() => {}), 5000);
 
   app.on('activate', () => {
