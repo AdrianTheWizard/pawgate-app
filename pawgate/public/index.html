@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
@@ -422,7 +422,7 @@ body.scaled .phone{transition:transform .1s}
       </div>
       <label style="display:flex;align-items:center;gap:9px;margin-bottom:16px;cursor:pointer;user-select:none">
         <div id="remember-box" onclick="toggleRemember()" style="width:18px;height:18px;border-radius:5px;border:1.5px solid #4e4a40;background:#1e1c18;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s"></div>
-        <span style="font-size:13px;color:#8a8270" onclick="toggleRemember()">Husk meg på denne eininga</span>
+        <span style="font-size:13px;color:#8a8270" onclick="toggleRemember()">Husk meg på denne enheten</span>
       </label>
       <button id="auth-submit-btn" onclick="handleLogin()" style="width:100%;background:linear-gradient(135deg,#c4a65e,#b89a5a);border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:700;color:#1a1714;cursor:pointer;letter-spacing:-.01em;box-shadow:0 4px 20px rgba(184,154,90,.25)">Logg inn</button>
     </div>
@@ -474,7 +474,7 @@ body.scaled .phone{transition:transform .1s}
     </div>
     <div class="summary-strip">
       <div class="sum-pill" onclick="showToast('Viser opne luker')"><div class="sum-num oc" id="cnt-open">3</div><div class="sum-label">Opne luker</div></div>
-      <div class="sum-pill" onclick="showToast('Viser lukka luker')"><div class="sum-num cc" id="cnt-closed">1</div><div class="sum-label">Lukka</div></div>
+      <div class="sum-pill" onclick="showToast('Viser lukket luker')"><div class="sum-num cc" id="cnt-closed">1</div><div class="sum-label">Lukka</div></div>
       <div class="sum-pill" onclick="showToast('4 kamera aktive')"><div class="sum-num" id="cnt-cams">4</div><div class="sum-label">Kamera</div></div>
       <div class="sum-pill" onclick="gs('calendar')"><div class="sum-num ac" id="cnt-tasks">0</div><div class="sum-label">Oppgåver i dag</div></div>
     </div>
@@ -519,7 +519,7 @@ body.scaled .phone{transition:transform .1s}
         </div>
       </div>
       <div class="cam-select-row" onclick="if(activeBinge){const u=document.getElementById('cam-stream-url');const t=document.getElementById('cam-stream-type');if(u)u.value=activeBinge.camUrl||'';if(t)t.value=activeBinge.camType||'mjpeg';}om('m-cam')">
-        <div class="csl-left"><div class="csl-lbl">Tilkopla kamera</div><div class="csl-val" id="d-cam">Kamera 1 – Binge 1</div></div>
+        <div class="csl-left"><div class="csl-lbl">Tilkoblet kamera</div><div class="csl-val" id="d-cam">Kamera 1 – Binge 1</div></div>
         <div class="csl-right">Bytt →</div>
       </div>
       <div class="dsection">
@@ -546,8 +546,8 @@ body.scaled .phone{transition:transform .1s}
             <button class="tbtn" id="btn-close" onclick="dSetLuke(false)"><span class="ti"></span>Lukk</button>
           </div>
           <div class="trow">
-            <div class="trow-l"><div class="trow-lbl">Automatisk opning</div><div class="trow-sub">Kvar dag</div></div>
-            <div class="trow-r"><input type="time" class="tinp" id="ao-inp" onchange="saveAuto('open',this.value)"><div class="sw on" onclick="toggleSw(this,'Automatisk opning')"></div></div>
+            <div class="trow-l"><div class="trow-lbl">Automatisk åpning</div><div class="trow-sub">Kvar dag</div></div>
+            <div class="trow-r"><input type="time" class="tinp" id="ao-inp" onchange="saveAuto('open',this.value)"><div class="sw on" onclick="toggleSw(this,'Automatisk åpning')"></div></div>
           </div>
           <div class="trow">
             <div class="trow-l"><div class="trow-lbl">Automatisk lukking</div><div class="trow-sub">Kvar dag</div></div>
@@ -555,7 +555,7 @@ body.scaled .phone{transition:transform .1s}
           </div>
         </div>
         <div class="erow" data-hw="luke" onclick="openLukeHw()">
-          <div class="erow-l"><div class="er-lbl">Tilkopla hardware</div><div class="er-val" id="d-luke-hw">PawGate-modul</div></div>
+          <div class="erow-l"><div class="er-lbl">Tilkoblet hardware</div><div class="er-val" id="d-luke-hw">PawGate-modul</div></div>
           <div class="erow-r">Endre →</div>
         </div>
         <div class="info-row"><span class="ir-lbl">Sist endra</span><span class="ir-val" id="d-lc">–</span></div>
@@ -568,7 +568,7 @@ body.scaled .phone{transition:transform .1s}
           <div class="spyl-sched" id="spyl-sched"></div>
         </div>
         <div class="erow" data-hw="spyl" onclick="openSpylHw()">
-          <div class="erow-l"><div class="er-lbl">Tilkopla hardware</div><div class="er-val" id="d-spyl-hw">PawGate-modul</div></div>
+          <div class="erow-l"><div class="er-lbl">Tilkoblet hardware</div><div class="er-val" id="d-spyl-hw">PawGate-modul</div></div>
           <div class="erow-r">Endre →</div>
         </div>
         <div class="info-row"><span class="ir-lbl">Sist spylt</span><span class="ir-val" id="d-ls">–</span></div>
@@ -648,11 +648,11 @@ body.scaled .phone{transition:transform .1s}
       <div style="padding:10px 4px 0">
         <button onclick="om('m-invite')" style="width:100%;padding:12px;border-radius:13px;border:2px dashed var(--border2);background:transparent;color:var(--muted);font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">+ Inviter ny brukar</button>
       </div>
-      <div class="sg-lbl">Kva kan kvar rolle gjere</div>
+      <div class="sg-lbl">Kva kan hver rolle gjere</div>
       <div class="sg-block">
-        <div class="sr" style="cursor:default"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zM5 20h14"/></svg></div><div><div class="sr-lbl">Eigar</div><div class="sr-sub">Alt — brukarar, innstillingar, betaling</div></div></div></div>
-        <div class="sr" style="cursor:default"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><div><div class="sr-lbl">Administrator</div><div class="sr-sub">Innstillingar, hardware, kamera — ikkje brukarar</div></div></div></div>
-        <div class="sr" style="cursor:default"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="sr-lbl">Tilsett</div><div class="sr-sub">Styre luker, spyle, sjå kamera og kalender</div></div></div></div>
+        <div class="sr" style="cursor:default"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zM5 20h14"/></svg></div><div><div class="sr-lbl">Eier</div><div class="sr-sub">Alt — brukarar, innstillingar, betaling</div></div></div></div>
+        <div class="sr" style="cursor:default"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><div><div class="sr-lbl">Administrator</div><div class="sr-sub">Innstillingar, hardware, kamera — ikke brukarar</div></div></div></div>
+        <div class="sr" style="cursor:default"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="sr-lbl">Ansatt</div><div class="sr-sub">Styre luker, spyle, sjå kamera og kalender</div></div></div></div>
         <div class="sr" style="cursor:default;border-bottom:none"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div><div class="sr-lbl">Lesar</div><div class="sr-sub">Berre sjå — ingen styring</div></div></div></div>
       </div>
       <div style="height:12px"></div>
@@ -803,9 +803,9 @@ body.scaled .phone{transition:transform .1s}
       </div>
       <div class="sg-lbl">Kamera</div>
       <div class="sg-block">
-        <div class="sr" onclick="gs('screen-cam-setup');showToast('Opnar kameraoppsett...')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div><div class="sr-lbl">Legg til kamera</div><div class="sr-sub">IP-kamera, RTSP, HTTP — alle merke</div></div></div><div class="sr-right">→</div></div>
-        <div class="sr" onclick="startCamScan()"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="sr-lbl">Automatisk skanning</div><div class="sr-sub">Finn kamera på same nettverk</div></div></div><div class="sr-right">→</div></div>
-        <div class="sr" onclick="showToast('4 kamera aktive ')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="sr-lbl">Tilkopla kamera</div><div class="sr-sub">4 aktive · Hikvision, Reolink, Dahua...</div></div></div><div class="sr-right"><span class="sr-val">4</span></div></div>
+        <div class="sr" onclick="gs('screen-cam-setup');showToast('Åpner kameraoppsett...')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div><div class="sr-lbl">Legg til kamera</div><div class="sr-sub">IP-kamera, RTSP, HTTP — alle merke</div></div></div><div class="sr-right">→</div></div>
+        <div class="sr" onclick="startCamScan()"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="sr-lbl">Automatisk skanning</div><div class="sr-sub">Finn kamera på samme nettverk</div></div></div><div class="sr-right">→</div></div>
+        <div class="sr" onclick="showToast('4 kamera aktive ')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="sr-lbl">Tilkoblet kamera</div><div class="sr-sub">4 aktive · Hikvision, Reolink, Dahua...</div></div></div><div class="sr-right"><span class="sr-val">4</span></div></div>
         <div class="sr" onclick="om('m-cam-add')"><div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div><div><div class="sr-lbl">Manuell tilkopling</div><div class="sr-sub">Skriv inn IP-adresse eller RTSP-lenke</div></div></div><div class="sr-right">→</div></div>
       </div>
       <div class="sg-lbl">Hundeluker & Spyling — alle bingar</div>
@@ -818,8 +818,8 @@ body.scaled .phone{transition:transform .1s}
           <div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div><div><div class="sr-lbl">Spylesystem — alle bingar</div><div class="sr-sub" id="global-spyl-sub">PawGate-modul</div></div></div>
           <div class="sr-right">Endre alle →</div>
         </div>
-        <div class="sr" onclick="showToast('Gå inn på kvar binge for å overstyre enkeltvis')">
-          <div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><div><div class="sr-lbl">Overstyr enkelt binge</div><div class="sr-sub">Trykk inn på ei binge → Endre hardware</div></div></div>
+        <div class="sr" onclick="showToast('Gå inn på hver binge for å overstyre enkeltvis')">
+          <div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><div><div class="sr-lbl">Overstyr enkelt binge</div><div class="sr-sub">Trykk inn på en binge → Endre hardware</div></div></div>
           <div class="sr-right">→</div>
         </div>
       </div>
@@ -858,9 +858,9 @@ body.scaled .phone{transition:transform .1s}
           </div>
         </div>
         <div class="sr">
-          <div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="sr-lbl">Luke reagerer ikkje</div><div class="sr-sub" id="smart-luke-sub">Aktiv · varsel ved planlagt feil</div></div></div>
+          <div class="sr-left"><div class="sr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="sr-lbl">Luke reagerer ikke</div><div class="sr-sub" id="smart-luke-sub">Aktiv · varsel ved planlagt feil</div></div></div>
           <div class="sr-right" style="display:flex;align-items:center;gap:10px">
-            <div class="sw on" id="sw-lukefail" onclick="toggleSmartSw(this,'sw-lukefail','Luke reagerer ikkje');event.stopPropagation()"></div>
+            <div class="sw on" id="sw-lukefail" onclick="toggleSmartSw(this,'sw-lukefail','Luke reagerer ikke');event.stopPropagation()"></div>
           </div>
         </div>
         <div class="sr">
@@ -974,7 +974,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-hw-luke">
   <div class="modal">
     <div class="modal-title">→ Luketype — denne bingen</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Vel korleis luka er tilkopla. Endrar berre denne bingen.</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Vel korleis luka er tilkoblet. Endrar bare denne bingen.</div>
     <div id="hw-luke-opts"></div>
     <div id="hw-luke-extra" style="margin-top:10px"></div>
     <div class="mactions">
@@ -987,7 +987,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-hw-spyl">
   <div class="modal">
     <div class="modal-title">Spylesystem — denne bingen</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Vel korleis spylesystemet er tilkopla. Endrar berre denne bingen.</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Vel korleis spylesystemet er tilkoblet. Endrar bare denne bingen.</div>
     <div id="hw-spyl-opts"></div>
     <div id="hw-spyl-extra" style="margin-top:10px"></div>
     <div class="mactions">
@@ -1000,7 +1000,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-hw-global-luke">
   <div class="modal">
     <div class="modal-title">→ Luketype — alle bingar</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Dette vert sett på <strong>alle bingar</strong> samtidig. Du kan overstyre enkeltvis inne på kvar binge etterpå.</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Dette vert sett på <strong>alle bingar</strong> samtidig. Du kan overstyre enkeltvis inne på hver binge etterpå.</div>
     <div id="hw-gluke-opts"></div>
     <div id="hw-gluke-extra" style="margin-top:10px"></div>
     <div class="mactions">
@@ -1013,7 +1013,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-hw-global-spyl">
   <div class="modal">
     <div class="modal-title">Spylesystem — alle bingar</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Dette vert sett på <strong>alle bingar</strong> samtidig. Du kan overstyre enkeltvis inne på kvar binge etterpå.</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Dette vert sett på <strong>alle bingar</strong> samtidig. Du kan overstyre enkeltvis inne på hver binge etterpå.</div>
     <div id="hw-gspyl-opts"></div>
     <div id="hw-gspyl-extra" style="margin-top:10px"></div>
     <div class="mactions">
@@ -1087,7 +1087,7 @@ body.scaled .phone{transition:transform .1s}
     </div>
     <div style="font-size:11px;color:var(--muted);line-height:1.5">
       <b>MJPEG</b>: finn URL i kamera-appen din (t.d. <code>http://ip/stream</code>).<br>
-      <b>RTSP</b>: installer <b>go2rtc</b> på ein lokal PC/Raspberry Pi — den konverterer RTSP til MJPEG/HLS.
+      <b>RTSP</b>: installer <b>go2rtc</b> på en lokal PC/Raspberry Pi — den konverterer RTSP til MJPEG/HLS.
     </div>
     <div class="mactions"><button class="mbtn" onclick="cm('m-cam')">Avbryt</button><button class="mbtn prim" onclick="saveCam()">Lagre</button></div>
   </div>
@@ -1135,9 +1135,9 @@ body.scaled .phone{transition:transform .1s}
     <div class="mfield"><div class="mlabel">E-post</div><input type="email" class="minp" id="inv-email" placeholder="namn@example.com"></div>
     <div class="mfield"><div class="mlabel">Rolle</div>
       <select class="msel" id="inv-role">
-        <option value="staff">Tilsett — styre luker, spyle, kamera</option>
+        <option value="staff">Ansatt — styre luker, spyle, kamera</option>
         <option value="admin">Administrator — alle innstillingar</option>
-        <option value="reader">Lesar — berre sjå</option>
+        <option value="reader">Lesar — bare sjå</option>
       </select>
     </div>
     <div class="mactions"><button class="mbtn" onclick="cm('m-invite')">Avbryt</button><button class="mbtn prim" onclick="sendInvite()">Send invitasjon</button></div>
@@ -1151,7 +1151,7 @@ body.scaled .phone{transition:transform .1s}
     <div class="mfield"><div class="mlabel">Rolle</div>
       <select class="msel" id="edit-user-role">
         <option value="admin">Administrator</option>
-        <option value="staff">Tilsett</option>
+        <option value="staff">Ansatt</option>
         <option value="reader">Lesar</option>
       </select>
     </div>
@@ -1223,7 +1223,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-smart-nospyl">
   <div class="modal">
     <div class="modal-title">Varsel — ingen spyling</div>
-    <div class="mfield"><div class="mlabel">Send varsel viss ei binge ikkje har vorte spylt på</div>
+    <div class="mfield"><div class="mlabel">Send varsel viss en binge ikke har vorte spylt på</div>
       <select class="msel" id="nospyl-hours">
         <option value="6">6 timar</option>
         <option value="12" selected>12 timar</option>
@@ -1239,7 +1239,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-smart-temp">
   <div class="modal">
     <div class="modal-title">Temperaturgrenser</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Send varsel viss temperaturen i ei binge går utanfor desse grensene.</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Send varsel viss temperaturen i en binge går utanfor desse grensene.</div>
     <div class="mfield"><div class="mlabel">Varsel viss over (°C)</div><input type="number" class="minp" id="temp-max" value="28" min="15" max="45"></div>
     <div class="mfield"><div class="mlabel">Varsel viss under (°C)</div><input type="number" class="minp" id="temp-min" value="5" min="-20" max="15"></div>
     <div class="mactions"><button class="mbtn" onclick="cm('m-smart-temp')">Avbryt</button><button class="mbtn prim" onclick="saveTempLimits()">Lagre</button></div>
@@ -1250,7 +1250,7 @@ body.scaled .phone{transition:transform .1s}
 <div class="modal-back" id="m-smart-inact">
   <div class="modal">
     <div class="modal-title">Rørsle-varsel</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Send varsel viss kamera ikkje oppdagar rørsle i ei binge.</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Send varsel viss kamera ikke oppdagar rørsle i en binge.</div>
     <div class="mfield"><div class="mlabel">Send varsel etter</div>
       <select class="msel" id="inact-hours">
         <option value="1">1 time</option>
@@ -1462,7 +1462,7 @@ async function loadFromCloud(userId) {
       spylHw: r.spyl_hw || 'pawgate', spylIp: r.spyl_ip || '', spylCh: r.spyl_channel ?? 0,
       spylCloseUrl: r.spyl_close_url || '', spylTopic: r.spyl_topic || '', spylPort: r.spyl_port || '1883',
       camUrl: r.cam_url || '', camType: r.cam_type || 'mjpeg',
-      cam: r.cam_url ? `Kamera tilkopla` : `Kamera ${i+1} – ${r.name}`, spraying: false,
+      cam: r.cam_url ? `Kamera tilkoblet` : `Kamera ${i+1} – ${r.name}`, spraying: false,
     }));
     renderList(); updateCounts();
     if (binges.length > 0) openDetail(binges[0].id);
@@ -1540,7 +1540,7 @@ let notifs=[
   {id:1,title:'Binge 2 – luke lukka',body:'Automatisk lukking kl. 21:00 gjennomført.',time:'I dag, 21:00',read:false},
   {id:2,title:'Spyling fullført – Binge 1',body:'Spyling kl. 07:30 ferdig. 45 sek.',time:'I dag, 07:31',read:false},
   {id:3,title:'Oppgåve: Vask kennel',body:'Påminning kl. 08:00 i dag.',time:'I dag, 08:00',read:false},
-  {id:4,title:'Alle luker opna',body:'Automatisk opning kl. 07:00 gjennomført.',time:'I dag, 07:00',read:true},
+  {id:4,title:'Alle luker opna',body:'Automatisk åpning kl. 07:00 gjennomført.',time:'I dag, 07:00',read:true},
   {id:5,title:'Tilkobling gjenoppretta',body:'Binge 3 tilkobla att.',time:'I går, 14:22',read:true},
 ];
 const now=new Date();
@@ -1729,7 +1729,7 @@ function _mqttClient(brokerIp, port) {
   const client = mqtt.connect(`${proto}://${brokerIp}:${port}/mqtt`, {
     connectTimeout: 5000, reconnectPeriod: 5000,
   });
-  client.on('error', () => showToast('⚠️ MQTT: klarte ikkje kople til broker'));
+  client.on('error', () => showToast('⚠️ MQTT: klarte ikke koble til broker'));
   _mqttClients[key] = client;
   return client;
 }
@@ -1762,13 +1762,13 @@ async function hwCall(b, action) {
       const url = on ? ip : (closeUrl || ip.replace(/\/on\/?$/, '/off'));
       await fetch(url, { signal: AbortSignal.timeout(3000) });
     } else if (hw === 'mqtt') {
-      if (!topic) { showToast('⚠️ MQTT: topic ikkje konfigurert'); return; }
+      if (!topic) { showToast('⚠️ MQTT: topic ikke konfigurert'); return; }
       const client = _mqttClient(ip, port);
-      if (!client) { showToast('⚠️ MQTT-bibliotek ikkje lasta'); return; }
+      if (!client) { showToast('⚠️ MQTT-bibliotek ikke lasta'); return; }
       client.publish(topic, on ? '1' : '0', { qos: 1 });
     }
   } catch(e) {
-    showToast('⚠️ Klarte ikkje nå eininga — sjekk nettverk');
+    showToast('⚠️ Klarte ikke nå enheten — sjekk nettverket');
   }
 }
 
@@ -1911,7 +1911,7 @@ function saveCam(){
   if (url) {
     activeBinge.camUrl = url;
     activeBinge.camType = type;
-    activeBinge.cam = 'Kamera tilkopla';
+    activeBinge.cam = 'Kamera tilkoblet';
   }
   document.getElementById('d-cam').textContent = activeBinge.cam;
   cm('m-cam'); showToast('Kamera oppdatert ✓');
@@ -1953,7 +1953,7 @@ function addBinge() {
 }
 
 // Calendar
-const dayNames=['Man','Tys','Ons','Tor','Fre','Lør','Søn'];
+const dayNames=['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
 const monthNames=['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
 function renderCalendar(){
   document.getElementById('cal-month-lbl').textContent=`${monthNames[calMonth]} ${calYear}`;
@@ -2038,7 +2038,7 @@ function selectPayOption(el,name,type){
   } else if(type==='vipps'){
     extra.innerHTML=`<div class="mfield"><div class="mlabel">Mobilnummer</div><input type="tel" class="minp" id="inp-vipps" placeholder="+47 000 00 000"></div>`;
   } else if(type==='apple'){
-    extra.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;font-size:13px;color:var(--muted)">Apple Pay vert aktivert via Face ID / Touch ID på eininga di</div>`;
+    extra.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;font-size:13px;color:var(--muted)">Apple Pay vert aktivert via Face ID / Touch ID på enheten di</div>`;
   } else if(type==='invoice'){
     extra.innerHTML=`<div class="mfield"><div class="mlabel">E-post for faktura</div><input type="email" class="minp" id="inp-invoice" placeholder="faktura@example.com"></div>`;
   }
@@ -2087,7 +2087,7 @@ function saveCamManual(){
   if(!name||!url){showToast('Fyll inn namn og adresse');return}
   cm('m-cam-add');showToast(`"${name}" lagt til ✓`);
 }
-function startCamScan(){showToast('Skannar nettverket...');setTimeout(()=>showToast('4 kamera funne ✓'),2000)}
+function startCamScan(){showToast('Skannar nettverket...');setTimeout(()=>showToast('4 kamera funnet ✓'),2000)}
 
 // ── Fullscreen camera ──
 let fsClockTimer = null;
@@ -2176,14 +2176,14 @@ document.addEventListener('fullscreenchange', () => {
 });
 
 const hwTypes = [
-  {id:'pawgate', label:'PawGate-modul',     sub:'Plug & play — tilgjengeleg som tillegg', icon:'🟢'},
+  {id:'pawgate', label:'PawGate-modul',     sub:'Plug & play — tilgjengelig som tillegg', icon:'🟢'},
   {id:'wifi',    label:'WiFi (ESP32/Arduino)',sub:'Koble til via lokalt WiFi-nettverk',    icon:'📶'},
   {id:'bt',      label:'Bluetooth',           sub:'BLE — kort rekkevidde, ingen ruter nødvendig', icon:'🔵'},
   {id:'shelly',  label:'Shelly relé',         sub:'Shelly 1, 1PM, Plus o.l. via IP',      icon:'📡'},
   {id:'sonoff',  label:'Sonoff relé',         sub:'Sonoff Basic, Mini, DUAL via IP',       icon:'📡'},
   {id:'mqtt',    label:'MQTT',                sub:'Eige system via MQTT-broker',           icon:'🔗'},
   {id:'gpio',    label:'GPIO direkte',        sub:'Raspberry Pi pin',                      icon:'🔌'},
-  {id:'none',    label:'Ikkje tilkopla',      sub:'Deaktivert',                            icon:'⭕'},
+  {id:'none',    label:'Ikkje tilkoblet',      sub:'Deaktivert',                            icon:'⭕'},
 ];
 
 let selHwLuke = 'pawgate', selHwSpyl = 'pawgate', selHwType = null;
@@ -2223,7 +2223,7 @@ function buildHwExtra(containerId, typeId) {
       <div class="mfield"><div class="mlabel">IP-adresse til Sonoff (DIY-modus)</div>
         <input type="text" class="minp hw-ip" placeholder="192.168.1.101" value="${esc(ip)}">
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px">Sonoff må vere i DIY-modus (LAN-kontroll aktivert i eWeLink-appen).</div>`;
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Sonoff må være i DIY-modus (LAN-kontroll aktivert i eWeLink-appen).</div>`;
   } else if (typeId === 'wifi') {
     const closeIp = b ? (isLuke ? b.lukeCloseUrl||'' : b.spylCloseUrl||'') : '';
     c.innerHTML = `
@@ -2233,9 +2233,9 @@ function buildHwExtra(containerId, typeId) {
       <div class="mfield"><div class="mlabel">Lukke-URL (HTTP GET)</div>
         <input type="text" class="minp hw-close-url" placeholder="http://192.168.1.50/close" value="${esc(closeIp)}">
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px">Fungerer med alle einingar med HTTP-API: Tasmota, Tuya local, Arduino, Raspberry Pi, PLS med REST-API osb.</div>`;
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Fungerer med alle enheter med HTTP-API: Tasmota, Tuya local, Arduino, Raspberry Pi, PLS med REST-API osb.</div>`;
   } else if (typeId === 'bt') {
-    c.innerHTML = `<div style="font-size:11px;color:var(--muted)">Bluetooth-tilkopling kjem i neste versjon av PawGate-modulen.</div>`;
+    c.innerHTML = `<div style="font-size:11px;color:var(--muted)">Bluetooth-tilkopling kommer i neste versjon av PawGate-modulen.</div>`;
   } else if (typeId === 'mqtt') {
     const mqttTopic = b ? (isLuke ? b.lukeTopic||'' : b.spylTopic||'') : '';
     const mqttPort  = b ? (isLuke ? b.lukePort||'1883' : b.spylPort||'1883') : '1883';
@@ -2338,7 +2338,7 @@ let users = [
 let pendingInvites = [];
 let nextUserId = 3, editingUserId = null;
 
-const roleLabels = {owner:'Eigar', admin:'Administrator', staff:'Tilsett', reader:'Lesar'};
+const roleLabels = {owner:'Eier', admin:'Administrator', staff:'Ansatt', reader:'Lesar'};
 const roleCss    = {owner:'role-owner', admin:'role-admin', staff:'role-staff', reader:'role-reader'};
 const roleColors = {owner:'#b89a5a', admin:'#6898b0', staff:'#7aaa5c', reader:'#8a8270'};
 
@@ -2448,7 +2448,7 @@ function removeUser() {
 const smartAlertState = {
   'sw-nospyl':  {on: true,  label: 'Ingen spyling'},
   'sw-temp':    {on: true,  label: 'Temperaturvarsel'},
-  'sw-lukefail':{on: true,  label: 'Luke reagerer ikkje'},
+  'sw-lukefail':{on: true,  label: 'Luke reagerer ikke'},
   'sw-camfail': {on: true,  label: 'Kamerasignal tapt'},
   'sw-inact':   {on: false, label: 'Rørsle-varsel'},
 };
@@ -2545,16 +2545,16 @@ function updateDogProfileUI() {
 
 // ── History ──
 const allHistory = [
-  {type:'luke', icon:'→', title:'Luke opna automatisk',       binge:'Binge 1', time:'I dag 07:00',     who:'Automatikk'},
+  {type:'luke', icon:'→', title:'Luke åpnet automatisk',       binge:'Binge 1', time:'I dag 07:00',     who:'Automatikk'},
   {type:'spyl', icon:'~', title:'Spyling fullført',            binge:'Binge 1', time:'I dag 07:31',     who:'Automatikk'},
-  {type:'luke', icon:'→', title:'Luke opna manuelt',           binge:'Binge 2', time:'I dag 08:12',     who:'Kari Hansen'},
+  {type:'luke', icon:'→', title:'Luke åpnet manuelt',           binge:'Binge 2', time:'I dag 08:12',     who:'Kari Hansen'},
   {type:'varsel',icon:'!','title':'Temperaturvarsel',          binge:'Binge 3', time:'I dag 11:42',     who:'System'},
   {type:'spyl', icon:'~', title:'Spyling starta manuelt',      binge:'Binge 4', time:'I dag 12:05',     who:'Ola Nordmann'},
-  {type:'luke', icon:'→', title:'Luke lukka automatisk',       binge:'Binge 2', time:'I går 21:00',     who:'Automatikk'},
+  {type:'luke', icon:'→', title:'Luke lukket automatisk',       binge:'Binge 2', time:'I går 21:00',     who:'Automatikk'},
   {type:'spyl', icon:'~', title:'Spyling fullført',            binge:'Binge 3', time:'I går 18:00',     who:'Automatikk'},
   {type:'varsel',icon:'🚨','title':'Tilkobling tapt – Binge 3', binge:'Binge 3', time:'I går 14:20',     who:'System'},
   {type:'info', icon:'✏️', title:'Hundeprofil oppdatert',       binge:'Binge 1', time:'I går 09:15',     who:'Ola Nordmann'},
-  {type:'luke', icon:'→', title:'Luke opna automatisk',        binge:'Binge 4', time:'I går 07:00',     who:'Automatikk'},
+  {type:'luke', icon:'→', title:'Luke åpnet automatisk',        binge:'Binge 4', time:'I går 07:00',     who:'Automatikk'},
 ];
 
 let historyFilter = 'all';
@@ -2852,9 +2852,9 @@ document.addEventListener('click', e => {
 
 // ── Custom roles ──
 let customRoles = [
-  {id:'owner',  name:'Eigar',         color:'#b89a5a', builtin:true,  perms:{view:true,  luke:true,  spyl:true,  calendar:true,  settings:true,  users:true}},
+  {id:'owner',  name:'Eier',         color:'#b89a5a', builtin:true,  perms:{view:true,  luke:true,  spyl:true,  calendar:true,  settings:true,  users:true}},
   {id:'admin',  name:'Administrator', color:'#6898b0', builtin:true,  perms:{view:true,  luke:true,  spyl:true,  calendar:true,  settings:true,  users:false}},
-  {id:'staff',  name:'Tilsett',       color:'#7aaa5c', builtin:true,  perms:{view:true,  luke:true,  spyl:true,  calendar:true,  settings:false, users:false}},
+  {id:'staff',  name:'Ansatt',       color:'#7aaa5c', builtin:true,  perms:{view:true,  luke:true,  spyl:true,  calendar:true,  settings:false, users:false}},
   {id:'reader', name:'Lesar',         color:'#8a8270', builtin:true,  perms:{view:true,  luke:false, spyl:false, calendar:false, settings:false, users:false}},
 ];
 let editingRoleId = null;
@@ -3176,15 +3176,15 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Dra bingene for å endre rekkefølgen',
     '+ Legg til binge':'+ Legg til binge','Binge-informasjon':'Binge-informasjon',
     'Hundeprofil':'Hundeprofil','Historikk':'Historikk','Hundeluke':'Hundeluker',
-    'Spyling':'Skylling','Automatisk opning':'Automatisk åpning',
-    'Automatisk lukking':'Automatisk lukking','Tilkopla hardware':'Tilkoblet hardware',
+    'Spyling':'Skylling','Automatisk åpning':'Automatisk åpning',
+    'Automatisk lukking':'Automatisk lukking','Tilkoblet hardware':'Tilkoblet hardware',
     'Bingenamn':'Bingenavn','Hundens namn':'Hundens navn','Fødselsdato':'Fødselsdato',
     'Vaksinasjon neste':'Vaksinasjon neste','→ Luke':'→ Luke','! Varsel':'! Varsel',
     'Marker alle som lest':'Marker alle som lest','+ Ny oppgåve':'+ Ny oppgave',
     'Brukarar & tilgang':'Brukere & tilgang','Aktive brukarar':'Aktive brukere',
     'Ventande invitasjonar':'Ventende invitasjoner',
-    'Kva kan kvar rolle gjere':'Hva kan hver rolle gjøre',
-    'Eigar':'Eier','Tilsett':'Ansatt','Lesar':'Leser',
+    'Kva kan hver rolle gjere':'Hva kan hver rolle gjøre',
+    'Eier':'Eier','Ansatt':'Ansatt','Lesar':'Leser',
     'Anlegg':'Anlegg','Hundeluker & Spyling — alle bingar':'Hundeluker & Skylling — alle binger',
     'Brukarar & tilgang':'Brukere & tilgang','Oppgåvekategoriar':'Oppgavekategorier',
     'Varslar — grunnleggjande':'Varsler — grunnleggende','Smarte varsel':'Smarte varsler',
@@ -3193,14 +3193,14 @@ const T = {
     'Definerte roller':'Definerte roller','Om tilgangar':'Om tilganger',
     'Kennelnamn':'Kennelnavn','Tidssone':'Tidssone',
     'Legg til kamera':'Legg til kamera','Automatisk skanning':'Automatisk skanning',
-    'Tilkopla kamera':'Tilkoblet kamera','Manuell tilkopling':'Manuell tilkobling',
+    'Tilkoblet kamera':'Tilkoblet kamera','Manuell tilkopling':'Manuell tilkobling',
     'Luketype — alle bingar':'Luketype — alle binger','Spylesystem — alle bingar':'Skyllesystem — alle binger',
     'Overstyr enkelt binge':'Overstyr enkelt binge','Administrer brukarar':'Administrer brukere',
     'Inviter ny brukar':'Inviter ny bruker','Administrer roller':'Administrer roller',
     'Legg til kategori':'Legg til kategori','Luke opa/lukka':'Luke åpen/lukket',
     'Spyling fullført':'Skylling fullført','Oppgåvepåminning':'Oppgavepåminnelse',
     'Tilkobling tapt':'Tilkobling tapt','Ingen spyling på X timar':'Ingen skylling på X timer',
-    'Temperaturvarsel':'Temperaturvarsel','Luke reagerer ikkje':'Luke reagerer ikke',
+    'Temperaturvarsel':'Temperaturvarsel','Luke reagerer ikke':'Luke reagerer ikke',
     'Kamerasignal tapt':'Kamerasignal tapt','Ingen rørsle oppdaga':'Ingen bevegelse oppdaget',
     'Neste faktura':'Neste faktura','Tema & fargar':'Tema & farger',
     'Endre passord':'Endre passord','Logg ut':'Logg ut','Sjå':'Se',
@@ -3219,14 +3219,14 @@ const T = {
     'Ferdig':'Done','Dra bingane for å endre rekkjefølgja':'Drag pens to reorder',
     '+ Legg til binge':'+ Add pen','Binge-informasjon':'Pen information','Hundeprofil':'Dog profile',
     'Historikk':'History','Hundeluke':'Dog gate','Spyling':'Washing',
-    'Automatisk opning':'Auto open','Automatisk lukking':'Auto close',
-    'Tilkopla hardware':'Connected hardware','Bingenamn':'Pen name','Hundens namn':"Dog's name",
+    'Automatisk åpning':'Auto open','Automatisk lukking':'Auto close',
+    'Tilkoblet hardware':'Connected hardware','Bingenamn':'Pen name','Hundens namn':"Dog's name",
     'Rase':'Breed','Fødselsdato':'Date of birth','Veterinær':'Veterinarian',
     'Vaksinasjon neste':'Next vaccination','Alle':'All','→ Luke':'→ Gate','! Varsel':'! Alert',
     'Marker alle som lest':'Mark all as read','I dag':'Today','+ Ny oppgåve':'+ New task',
     'Brukarar & tilgang':'Users & access','Aktive brukarar':'Active users',
-    'Ventande invitasjonar':'Pending invitations','Kva kan kvar rolle gjere':'What each role can do',
-    'Eigar':'Owner','Administrator':'Administrator','Tilsett':'Employee','Lesar':'Viewer',
+    'Ventande invitasjonar':'Pending invitations','Kva kan hver rolle gjere':'What each role can do',
+    'Eier':'Owner','Administrator':'Administrator','Ansatt':'Employee','Lesar':'Viewer',
     'Anlegg':'Facility','Hundeluker & Spyling — alle bingar':'Dog gates & Washing — all pens',
     'Oppgåvekategoriar':'Task categories','Varslar — grunnleggjande':'Notifications — basic',
     'Smarte varsel':'Smart alerts','Abonnement':'Subscription','Betalingsinformasjon':'Payment info',
@@ -3234,14 +3234,14 @@ const T = {
     'Bakgrunn':'Background','Førehandsvising':'Preview','Definerte roller':'Defined roles',
     'Om tilgangar':'About permissions','Kennelnamn':'Kennel name','Lokasjon':'Location',
     'Tidssone':'Timezone','Legg til kamera':'Add camera','Automatisk skanning':'Auto scan',
-    'Tilkopla kamera':'Connected cameras','Manuell tilkopling':'Manual connection',
+    'Tilkoblet kamera':'Connected cameras','Manuell tilkopling':'Manual connection',
     'Luketype — alle bingar':'Gate type — all pens','Spylesystem — alle bingar':'Wash system — all pens',
     'Overstyr enkelt binge':'Override single pen','Administrer brukarar':'Manage users',
     'Inviter ny brukar':'Invite user','Administrer roller':'Manage roles',
     'Legg til kategori':'Add category','Luke opa/lukka':'Gate open/closed',
     'Spyling fullført':'Wash complete','Oppgåvepåminning':'Task reminder',
     'Tilkobling tapt':'Connection lost','Ingen spyling på X timar':'No wash for X hours',
-    'Temperaturvarsel':'Temperature alert','Luke reagerer ikkje':'Gate not responding',
+    'Temperaturvarsel':'Temperature alert','Luke reagerer ikke':'Gate not responding',
     'Kamerasignal tapt':'Camera signal lost','Ingen rørsle oppdaga':'No motion detected',
     'Aktiv plan':'Active plan','Neste faktura':'Next invoice','Tema & fargar':'Theme & colors',
     'Språk':'Language','E-post':'Email','Endre passord':'Change password','Logg ut':'Log out',
@@ -3264,14 +3264,14 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Abteile ziehen zum Sortieren',
     '+ Legg til binge':'+ Abteil hinzufügen','Binge-informasjon':'Abteil-Information',
     'Hundeprofil':'Hundeprofil','Historikk':'Verlauf','Hundeluke':'Hundeklappe',
-    'Spyling':'Spülung','Automatisk opning':'Auto öffnen','Automatisk lukking':'Auto schließen',
-    'Tilkopla hardware':'Verbundene Hardware','Bingenamn':'Abteilname','Hundens namn':'Hundename',
+    'Spyling':'Spülung','Automatisk åpning':'Auto öffnen','Automatisk lukking':'Auto schließen',
+    'Tilkoblet hardware':'Verbundene Hardware','Bingenamn':'Abteilname','Hundens namn':'Hundename',
     'Rase':'Rasse','Fødselsdato':'Geburtsdatum','Veterinær':'Tierarzt',
     'Vaksinasjon neste':'Nächste Impfung','Alle':'Alle','→ Luke':'→ Klappe','! Varsel':'! Alarm',
     'Marker alle som lest':'Alle als gelesen markieren','I dag':'Heute','+ Ny oppgåve':'+ Neue Aufgabe',
     'Brukarar & tilgang':'Benutzer & Zugang','Aktive brukarar':'Aktive Benutzer',
-    'Ventande invitasjonar':'Ausstehende Einladungen','Kva kan kvar rolle gjere':'Was jede Rolle tun kann',
-    'Eigar':'Eigentümer','Administrator':'Administrator','Tilsett':'Mitarbeiter','Lesar':'Betrachter',
+    'Ventande invitasjonar':'Ausstehende Einladungen','Kva kan hver rolle gjere':'Was jede Rolle tun kann',
+    'Eier':'Eigentümer','Administrator':'Administrator','Ansatt':'Mitarbeiter','Lesar':'Betrachter',
     'Anlegg':'Anlage','Hundeluker & Spyling — alle bingar':'Hundeluken & Spülung — alle Abteile',
     'Oppgåvekategoriar':'Aufgabenkategorien','Varslar — grunnleggjande':'Benachrichtigungen — Basis',
     'Smarte varsel':'Intelligente Alarme','Abonnement':'Abonnement',
@@ -3280,14 +3280,14 @@ const T = {
     'Bakgrunn':'Hintergrund','Førehandsvising':'Vorschau','Definerte roller':'Definierte Rollen',
     'Om tilgangar':'Über Berechtigungen','Kennelnamn':'Kennelname','Lokasjon':'Standort',
     'Tidssone':'Zeitzone','Legg til kamera':'Kamera hinzufügen','Automatisk skanning':'Automatischer Scan',
-    'Tilkopla kamera':'Verbundene Kameras','Manuell tilkopling':'Manuelle Verbindung',
+    'Tilkoblet kamera':'Verbundene Kameras','Manuell tilkopling':'Manuelle Verbindung',
     'Luketype — alle bingar':'Klappentyp — alle Abteile','Spylesystem — alle bingar':'Spülsystem — alle Abteile',
     'Overstyr enkelt binge':'Einzelnes Abteil überschreiben','Administrer brukarar':'Benutzer verwalten',
     'Inviter ny brukar':'Benutzer einladen','Administrer roller':'Rollen verwalten',
     'Legg til kategori':'Kategorie hinzufügen','Luke opa/lukka':'Klappe offen/geschlossen',
     'Spyling fullført':'Spülung abgeschlossen','Oppgåvepåminning':'Aufgabenerinnerung',
     'Tilkobling tapt':'Verbindung verloren','Ingen spyling på X timar':'Keine Spülung seit X Stunden',
-    'Temperaturvarsel':'Temperaturalarm','Luke reagerer ikkje':'Klappe reagiert nicht',
+    'Temperaturvarsel':'Temperaturalarm','Luke reagerer ikke':'Klappe reagiert nicht',
     'Kamerasignal tapt':'Kamerasignal verloren','Ingen rørsle oppdaga':'Keine Bewegung erkannt',
     'Aktiv plan':'Aktiver Plan','Neste faktura':'Nächste Rechnung','Tema & fargar':'Thema & Farben',
     'Språk':'Sprache','E-post':'E-Mail','Endre passord':'Passwort ändern','Logg ut':'Abmelden',
@@ -3309,14 +3309,14 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Glissez les box pour réorganiser',
     '+ Legg til binge':'+ Ajouter un box','Binge-informasjon':'Info du box',
     'Hundeprofil':'Profil du chien','Historikk':'Historique','Hundeluke':'Porte pour chien',
-    'Spyling':'Rinçage','Automatisk opning':'Ouverture auto','Automatisk lukking':'Fermeture auto',
-    'Tilkopla hardware':'Matériel connecté','Bingenamn':'Nom du box','Hundens namn':'Nom du chien',
+    'Spyling':'Rinçage','Automatisk åpning':'Ouverture auto','Automatisk lukking':'Fermeture auto',
+    'Tilkoblet hardware':'Matériel connecté','Bingenamn':'Nom du box','Hundens namn':'Nom du chien',
     'Rase':'Race','Fødselsdato':'Date de naissance','Veterinær':'Vétérinaire',
     'Vaksinasjon neste':'Prochain vaccin','Alle':'Tous','→ Luke':'→ Porte','! Varsel':'! Alerte',
     'Marker alle som lest':'Tout marquer comme lu','I dag':"Aujourd'hui",'+ Ny oppgåve':'+ Nouvelle tâche',
     'Brukarar & tilgang':'Utilisateurs & accès','Aktive brukarar':'Utilisateurs actifs',
-    'Ventande invitasjonar':'Invitations en attente','Kva kan kvar rolle gjere':'Ce que chaque rôle peut faire',
-    'Eigar':'Propriétaire','Administrator':'Administrateur','Tilsett':'Employé','Lesar':'Lecteur',
+    'Ventande invitasjonar':'Invitations en attente','Kva kan hver rolle gjere':'Ce que chaque rôle peut faire',
+    'Eier':'Propriétaire','Administrator':'Administrateur','Ansatt':'Employé','Lesar':'Lecteur',
     'Anlegg':'Installation','Hundeluker & Spyling — alle bingar':'Portes & Rinçage — tous les box',
     'Oppgåvekategoriar':'Catégories de tâches','Varslar — grunnleggjande':'Notifications — basiques',
     'Smarte varsel':'Alertes intelligentes','Abonnement':'Abonnement',
@@ -3325,14 +3325,14 @@ const T = {
     'Bakgrunn':'Arrière-plan','Førehandsvising':'Aperçu','Definerte roller':'Rôles définis',
     'Om tilgangar':'À propos des autorisations','Kennelnamn':'Nom du chenil','Lokasjon':'Emplacement',
     'Tidssone':'Fuseau horaire','Legg til kamera':'Ajouter une caméra','Automatisk skanning':'Scan automatique',
-    'Tilkopla kamera':'Caméras connectées','Manuell tilkopling':'Connexion manuelle',
+    'Tilkoblet kamera':'Caméras connectées','Manuell tilkopling':'Connexion manuelle',
     'Luketype — alle bingar':'Type de porte — tous les box','Spylesystem — alle bingar':'Système de rinçage — tous les box',
     'Overstyr enkelt binge':'Remplacer un box individuel','Administrer brukarar':'Gérer les utilisateurs',
     'Inviter ny brukar':'Inviter un utilisateur','Administrer roller':'Gérer les rôles',
     'Legg til kategori':'Ajouter une catégorie','Luke opa/lukka':'Porte ouverte/fermée',
     'Spyling fullført':'Rinçage terminé','Oppgåvepåminning':'Rappel de tâche',
     'Tilkobling tapt':'Connexion perdue','Ingen spyling på X timar':'Aucun rinçage depuis X heures',
-    'Temperaturvarsel':'Alerte température','Luke reagerer ikkje':'Porte ne répond pas',
+    'Temperaturvarsel':'Alerte température','Luke reagerer ikke':'Porte ne répond pas',
     'Kamerasignal tapt':'Signal caméra perdu','Ingen rørsle oppdaga':'Aucun mouvement détecté',
     'Aktiv plan':'Plan actif','Neste faktura':'Prochaine facture','Tema & fargar':'Thème & couleurs',
     'Språk':'Langue','E-post':'E-mail','Endre passord':'Changer le mot de passe','Logg ut':'Se déconnecter',
@@ -3354,14 +3354,14 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Dra avdelningar för att sortera',
     '+ Legg til binge':'+ Lägg till avdelning','Binge-informasjon':'Avdelningsinformation',
     'Hundeprofil':'Hundprofil','Historikk':'Historik','Hundeluke':'Hundlucka',
-    'Spyling':'Sköljning','Automatisk opning':'Automatisk öppning','Automatisk lukking':'Automatisk stängning',
-    'Tilkopla hardware':'Ansluten hårdvara','Bingenamn':'Avdelningsnamn','Hundens namn':'Hundens namn',
+    'Spyling':'Sköljning','Automatisk åpning':'Automatisk öppning','Automatisk lukking':'Automatisk stängning',
+    'Tilkoblet hardware':'Ansluten hårdvara','Bingenamn':'Avdelningsnamn','Hundens namn':'Hundens namn',
     'Rase':'Ras','Fødselsdato':'Födelsedatum','Veterinær':'Veterinär',
     'Vaksinasjon neste':'Nästa vaccination','Alle':'Alla','→ Luke':'→ Lucka','! Varsel':'! Avisering',
     'Marker alle som lest':'Markera alla som läst','I dag':'Idag','+ Ny oppgåve':'+ Ny uppgift',
     'Brukarar & tilgang':'Användare & åtkomst','Aktive brukarar':'Aktiva användare',
-    'Ventande invitasjonar':'Väntande inbjudningar','Kva kan kvar rolle gjere':'Vad varje roll kan göra',
-    'Eigar':'Ägare','Administrator':'Administratör','Tilsett':'Anställd','Lesar':'Läsare',
+    'Ventande invitasjonar':'Väntande inbjudningar','Kva kan hver rolle gjere':'Vad varje roll kan göra',
+    'Eier':'Ägare','Administrator':'Administratör','Ansatt':'Anställd','Lesar':'Läsare',
     'Anlegg':'Anläggning','Hundeluker & Spyling — alle bingar':'Hundluckor & Sköljning — alla avdelningar',
     'Oppgåvekategoriar':'Uppgiftskategorier','Varslar — grunnleggjande':'Aviseringar — grundläggande',
     'Smarte varsel':'Smarta aviseringar','Abonnement':'Prenumeration',
@@ -3370,14 +3370,14 @@ const T = {
     'Bakgrunn':'Bakgrund','Førehandsvising':'Förhandsvisning','Definerte roller':'Definierade roller',
     'Om tilgangar':'Om behörigheter','Kennelnamn':'Kennelnamn','Lokasjon':'Plats',
     'Tidssone':'Tidszon','Legg til kamera':'Lägg till kamera','Automatisk skanning':'Automatisk skanning',
-    'Tilkopla kamera':'Anslutna kameror','Manuell tilkopling':'Manuell anslutning',
+    'Tilkoblet kamera':'Anslutna kameror','Manuell tilkopling':'Manuell anslutning',
     'Luketype — alle bingar':'Luckatyp — alla avdelningar','Spylesystem — alle bingar':'Sköljsystem — alla avdelningar',
     'Overstyr enkelt binge':'Åsidosätt enstaka avdelning','Administrer brukarar':'Hantera användare',
     'Inviter ny brukar':'Bjud in användare','Administrer roller':'Hantera roller',
     'Legg til kategori':'Lägg till kategori','Luke opa/lukka':'Lucka öppen/stängd',
     'Spyling fullført':'Sköljning klar','Oppgåvepåminning':'Uppgiftspåminnelse',
     'Tilkobling tapt':'Anslutning förlorad','Ingen spyling på X timar':'Ingen sköljning på X timmar',
-    'Temperaturvarsel':'Temperaturavisering','Luke reagerer ikkje':'Lucka svarar inte',
+    'Temperaturvarsel':'Temperaturavisering','Luke reagerer ikke':'Lucka svarar inte',
     'Kamerasignal tapt':'Kamerasignal förlorat','Ingen rørsle oppdaga':'Ingen rörelse upptäckt',
     'Aktiv plan':'Aktiv plan','Neste faktura':'Nästa faktura','Tema & fargar':'Tema & färger',
     'Språk':'Språk','E-post':'E-post','Endre passord':'Ändra lösenord','Logg ut':'Logga ut',
@@ -3399,14 +3399,14 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Træk bokse for at ændre rækkefølgen',
     '+ Legg til binge':'+ Tilføj boks','Binge-informasjon':'Boks-information',
     'Hundeprofil':'Hundeprofil','Historikk':'Historik','Hundeluke':'Hundeluge',
-    'Spyling':'Skylning','Automatisk opning':'Automatisk åbning','Automatisk lukking':'Automatisk lukning',
-    'Tilkopla hardware':'Tilsluttet hardware','Bingenamn':'Boksnavn','Hundens namn':'Hundens navn',
+    'Spyling':'Skylning','Automatisk åpning':'Automatisk åbning','Automatisk lukking':'Automatisk lukning',
+    'Tilkoblet hardware':'Tilsluttet hardware','Bingenamn':'Boksnavn','Hundens namn':'Hundens navn',
     'Rase':'Race','Fødselsdato':'Fødselsdato','Veterinær':'Dyrlæge',
     'Vaksinasjon neste':'Næste vaccination','Alle':'Alle','→ Luke':'→ Luge','! Varsel':'! Advarsel',
     'Marker alle som lest':'Marker alle som læst','I dag':'I dag','+ Ny oppgåve':'+ Ny opgave',
     'Brukarar & tilgang':'Brugere & adgang','Aktive brukarar':'Aktive brugere',
-    'Ventande invitasjonar':'Ventende invitationer','Kva kan kvar rolle gjere':'Hvad kan hver rolle gøre',
-    'Eigar':'Ejer','Administrator':'Administrator','Tilsett':'Medarbejder','Lesar':'Læser',
+    'Ventande invitasjonar':'Ventende invitationer','Kva kan hver rolle gjere':'Hvad kan hver rolle gøre',
+    'Eier':'Ejer','Administrator':'Administrator','Ansatt':'Medarbejder','Lesar':'Læser',
     'Anlegg':'Anlæg','Hundeluker & Spyling — alle bingar':'Hundeluger & Skylning — alle bokse',
     'Oppgåvekategoriar':'Opgavekategorier','Varslar — grunnleggjande':'Notifikationer — grundlæggende',
     'Smarte varsel':'Smarte advarsler','Abonnement':'Abonnement',
@@ -3415,14 +3415,14 @@ const T = {
     'Bakgrunn':'Baggrund','Førehandsvising':'Forhåndsvisning','Definerte roller':'Definerede roller',
     'Om tilgangar':'Om tilladelser','Kennelnamn':'Kennelnavn','Lokasjon':'Placering',
     'Tidssone':'Tidszone','Legg til kamera':'Tilføj kamera','Automatisk skanning':'Automatisk scanning',
-    'Tilkopla kamera':'Tilsluttede kameraer','Manuell tilkopling':'Manuel tilslutning',
+    'Tilkoblet kamera':'Tilsluttede kameraer','Manuell tilkopling':'Manuel tilslutning',
     'Luketype — alle bingar':'Lugetype — alle bokse','Spylesystem — alle bingar':'Skyllesystem — alle bokse',
     'Overstyr enkelt binge':'Tilsidesæt enkelt boks','Administrer brukarar':'Administrer brugere',
     'Inviter ny brukar':'Inviter bruger','Administrer roller':'Administrer roller',
     'Legg til kategori':'Tilføj kategori','Luke opa/lukka':'Luge åben/lukket',
     'Spyling fullført':'Skylning fuldført','Oppgåvepåminning':'Opgavepåmindelse',
     'Tilkobling tapt':'Forbindelse mistet','Ingen spyling på X timar':'Ingen skylning i X timer',
-    'Temperaturvarsel':'Temperaturadvarsel','Luke reagerer ikkje':'Luge reagerer ikke',
+    'Temperaturvarsel':'Temperaturadvarsel','Luke reagerer ikke':'Luge reagerer ikke',
     'Kamerasignal tapt':'Kamerasignal mistet','Ingen rørsle oppdaga':'Ingen bevægelse opdaget',
     'Aktiv plan':'Aktiv plan','Neste faktura':'Næste faktura','Tema & fargar':'Tema & farver',
     'Språk':'Sprog','E-post':'E-mail','Endre passord':'Skift adgangskode','Logg ut':'Log ud',
@@ -3444,14 +3444,14 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Przeciągnij budy, aby zmienić kolejność',
     '+ Legg til binge':'+ Dodaj budę','Binge-informasjon':'Informacje o budzie',
     'Hundeprofil':'Profil psa','Historikk':'Historia','Hundeluke':'Drzwi dla psa',
-    'Spyling':'Mycie','Automatisk opning':'Automatyczne otwieranie','Automatisk lukking':'Automatyczne zamykanie',
-    'Tilkopla hardware':'Podłączony sprzęt','Bingenamn':'Nazwa budy','Hundens namn':'Imię psa',
+    'Spyling':'Mycie','Automatisk åpning':'Automatyczne otwieranie','Automatisk lukking':'Automatyczne zamykanie',
+    'Tilkoblet hardware':'Podłączony sprzęt','Bingenamn':'Nazwa budy','Hundens namn':'Imię psa',
     'Rase':'Rasa','Fødselsdato':'Data urodzenia','Veterinær':'Weterynarz',
     'Vaksinasjon neste':'Następne szczepienie','Alle':'Wszystkie','→ Luke':'→ Drzwi','! Varsel':'! Alert',
     'Marker alle som lest':'Oznacz wszystkie jako przeczytane','I dag':'Dziś','+ Ny oppgåve':'+ Nowe zadanie',
     'Brukarar & tilgang':'Użytkownicy & dostęp','Aktive brukarar':'Aktywni użytkownicy',
-    'Ventande invitasjonar':'Oczekujące zaproszenia','Kva kan kvar rolle gjere':'Co może robić każda rola',
-    'Eigar':'Właściciel','Administrator':'Administrator','Tilsett':'Pracownik','Lesar':'Przeglądający',
+    'Ventande invitasjonar':'Oczekujące zaproszenia','Kva kan hver rolle gjere':'Co może robić każda rola',
+    'Eier':'Właściciel','Administrator':'Administrator','Ansatt':'Pracownik','Lesar':'Przeglądający',
     'Anlegg':'Obiekt','Hundeluker & Spyling — alle bingar':'Drzwi & Mycie — wszystkie budy',
     'Oppgåvekategoriar':'Kategorie zadań','Varslar — grunnleggjande':'Powiadomienia — podstawowe',
     'Smarte varsel':'Inteligentne alerty','Abonnement':'Subskrypcja',
@@ -3460,14 +3460,14 @@ const T = {
     'Bakgrunn':'Tło','Førehandsvising':'Podgląd','Definerte roller':'Zdefiniowane role',
     'Om tilgangar':'O uprawnieniach','Kennelnamn':'Nazwa kennela','Lokasjon':'Lokalizacja',
     'Tidssone':'Strefa czasowa','Legg til kamera':'Dodaj kamerę','Automatisk skanning':'Automatyczne skanowanie',
-    'Tilkopla kamera':'Podłączone kamery','Manuell tilkopling':'Ręczne połączenie',
+    'Tilkoblet kamera':'Podłączone kamery','Manuell tilkopling':'Ręczne połączenie',
     'Luketype — alle bingar':'Typ drzwi — wszystkie budy','Spylesystem — alle bingar':'System mycia — wszystkie budy',
     'Overstyr enkelt binge':'Nadpisz pojedynczą budę','Administrer brukarar':'Zarządzaj użytkownikami',
     'Inviter ny brukar':'Zaproś użytkownika','Administrer roller':'Zarządzaj rolami',
     'Legg til kategori':'Dodaj kategorię','Luke opa/lukka':'Drzwi otwarte/zamknięte',
     'Spyling fullført':'Mycie zakończone','Oppgåvepåminning':'Przypomnienie zadania',
     'Tilkobling tapt':'Utrata połączenia','Ingen spyling på X timar':'Brak mycia przez X godzin',
-    'Temperaturvarsel':'Alert temperatury','Luke reagerer ikkje':'Drzwi nie odpowiadają',
+    'Temperaturvarsel':'Alert temperatury','Luke reagerer ikke':'Drzwi nie odpowiadają',
     'Kamerasignal tapt':'Utracony sygnał kamery','Ingen rørsle oppdaga':'Brak ruchu',
     'Aktiv plan':'Aktywny plan','Neste faktura':'Następna faktura','Tema & fargar':'Motyw i kolory',
     'Språk':'Język','E-post':'E-mail','Endre passord':'Zmień hasło','Logg ut':'Wyloguj',
@@ -3489,14 +3489,14 @@ const T = {
     'Dra bingane for å endre rekkjefølgja':'Arrastra los boxes para reordenar',
     '+ Legg til binge':'+ Agregar box','Binge-informasjon':'Información del box',
     'Hundeprofil':'Perfil del perro','Historikk':'Historial','Hundeluke':'Puerta para perros',
-    'Spyling':'Lavado','Automatisk opning':'Apertura automática','Automatisk lukking':'Cierre automático',
-    'Tilkopla hardware':'Hardware conectado','Bingenamn':'Nombre del box','Hundens namn':'Nombre del perro',
+    'Spyling':'Lavado','Automatisk åpning':'Apertura automática','Automatisk lukking':'Cierre automático',
+    'Tilkoblet hardware':'Hardware conectado','Bingenamn':'Nombre del box','Hundens namn':'Nombre del perro',
     'Rase':'Raza','Fødselsdato':'Fecha de nacimiento','Veterinær':'Veterinario',
     'Vaksinasjon neste':'Próxima vacuna','Alle':'Todos','→ Luke':'→ Puerta','! Varsel':'! Alerta',
     'Marker alle som lest':'Marcar todo como leído','I dag':'Hoy','+ Ny oppgåve':'+ Nueva tarea',
     'Brukarar & tilgang':'Usuarios & acceso','Aktive brukarar':'Usuarios activos',
-    'Ventande invitasjonar':'Invitaciones pendientes','Kva kan kvar rolle gjere':'Qué puede hacer cada rol',
-    'Eigar':'Propietario','Administrator':'Administrador','Tilsett':'Empleado','Lesar':'Lector',
+    'Ventande invitasjonar':'Invitaciones pendientes','Kva kan hver rolle gjere':'Qué puede hacer cada rol',
+    'Eier':'Propietario','Administrator':'Administrador','Ansatt':'Empleado','Lesar':'Lector',
     'Anlegg':'Instalación','Hundeluker & Spyling — alle bingar':'Puertas & Lavado — todos los boxes',
     'Oppgåvekategoriar':'Categorías de tareas','Varslar — grunnleggjande':'Notificaciones — básicas',
     'Smarte varsel':'Alertas inteligentes','Abonnement':'Suscripción',
@@ -3505,14 +3505,14 @@ const T = {
     'Bakgrunn':'Fondo','Førehandsvising':'Vista previa','Definerte roller':'Roles definidos',
     'Om tilgangar':'Sobre permisos','Kennelnamn':'Nombre del criadero','Lokasjon':'Ubicación',
     'Tidssone':'Zona horaria','Legg til kamera':'Agregar cámara','Automatisk skanning':'Escaneo automático',
-    'Tilkopla kamera':'Cámaras conectadas','Manuell tilkopling':'Conexión manual',
+    'Tilkoblet kamera':'Cámaras conectadas','Manuell tilkopling':'Conexión manual',
     'Luketype — alle bingar':'Tipo de puerta — todos los boxes','Spylesystem — alle bingar':'Sistema de lavado — todos los boxes',
     'Overstyr enkelt binge':'Anular box individual','Administrer brukarar':'Gestionar usuarios',
     'Inviter ny brukar':'Invitar usuario','Administrer roller':'Gestionar roles',
     'Legg til kategori':'Agregar categoría','Luke opa/lukka':'Puerta abierta/cerrada',
     'Spyling fullført':'Lavado completo','Oppgåvepåminning':'Recordatorio de tarea',
     'Tilkobling tapt':'Conexión perdida','Ingen spyling på X timar':'Sin lavado por X horas',
-    'Temperaturvarsel':'Alerta de temperatura','Luke reagerer ikkje':'Puerta no responde',
+    'Temperaturvarsel':'Alerta de temperatura','Luke reagerer ikke':'Puerta no responde',
     'Kamerasignal tapt':'Señal de cámara perdida','Ingen rørsle oppdaga':'Sin movimiento detectado',
     'Aktiv plan':'Plan activo','Neste faktura':'Próxima factura','Tema & fargar':'Tema y colores',
     'Språk':'Idioma','E-post':'Correo','Endre passord':'Cambiar contraseña','Logg ut':'Cerrar sesión',
@@ -3795,7 +3795,7 @@ function doConfirmedSpray() {
   animation:slideUp .3s ease">
   <div style="background:var(--accent);padding:12px 16px;display:flex;align-items:center;gap:10px">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
-    <span style="color:#fff;font-weight:700;font-size:14px">Ny oppdatering tilgjengeleg</span>
+    <span style="color:#fff;font-weight:700;font-size:14px">Ny oppdatering tilgjengelig</span>
     <span id="update-version" style="color:#ffffffaa;font-size:12px;margin-left:auto"></span>
   </div>
   <div style="padding:14px 16px">
