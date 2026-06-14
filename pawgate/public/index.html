@@ -67,6 +67,8 @@ html.is-electron .desktop-sidebar{display:flex!important}
 .ds-badge.show{display:block}
 @keyframes pgSpin{to{transform:rotate(360deg)}}
 .upd-spinning svg{animation:pgSpin .9s linear infinite;transform-origin:center}
+@keyframes pgShimmer{0%{background-position:-300% 0}100%{background-position:300% 0}}
+.upd-finalizing #upd-bar,.upd-finalizing #upd-popup-bar{background:linear-gradient(90deg,var(--accent) 20%,#f0d878 50%,var(--accent) 80%)!important;background-size:300% 100%!important;animation:pgShimmer 1.6s linear infinite!important;width:100%!important}
 .ds-footer{padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:#4a4840;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
 
 /* Sidebar takes fixed width, phone fills the rest */
@@ -3946,8 +3948,10 @@ function doConfirmedSpray() {
           <div id="upd-popup-bar" style="height:100%;background:var(--accent);border-radius:99px;width:0%;transition:width .4s"></div>
         </div>
       </div>
-      <div id="upd-popup-ready" style="display:none;font-size:13px;color:var(--accent);font-weight:600;text-align:center;padding:8px 0">
-        ✓ Oppdatering klar — restart for å installere
+      <div id="upd-popup-ready" style="display:none;text-align:center;padding:10px 0 4px">
+        <div style="font-size:28px;margin-bottom:8px">✅</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text)">Oppdatering klar!</div>
+        <div id="upd-popup-ready-sub" style="font-size:12px;color:var(--muted);margin-top:4px">Start appen på nytt for å installere</div>
       </div>
       <div class="mactions">
         <button class="mbtn" onclick="pgDismissUpdate()">Senere</button>
@@ -4262,38 +4266,58 @@ if (window.pawgateUpdater) {
 
   window.pawgateUpdater.onDownloadProgress(prog => {
     const done = prog.percent >= 100;
-    // Popup
-    document.getElementById('upd-popup-progress').style.display = '';
-    document.getElementById('upd-popup-pct').textContent = done ? 'Ferdigstiller…' : prog.percent + '%';
-    document.getElementById('upd-popup-bar').style.width = prog.percent + '%';
-    document.getElementById('upd-popup-btn').textContent = done ? 'Ferdigstiller oppdatering…' : 'Laster ned… ' + prog.percent + '%';
-    document.getElementById('upd-popup-btn').disabled = true;
-    // Settings progress
-    const row = document.getElementById('upd-progress-row');
-    if (!done) {
-      row.style.display = '';
-      document.getElementById('upd-pct-lbl').textContent = prog.percent + '%';
-      document.getElementById('upd-bar').style.width = prog.percent + '%';
+    const pct = Math.min(100, prog.percent);
+
+    // ── Popup ──
+    const popProg = document.getElementById('upd-popup-progress');
+    popProg.style.display = '';
+    document.getElementById('upd-popup-bar').style.width = pct + '%';
+    if (done) {
+      popProg.classList.add('upd-finalizing');
+      document.getElementById('upd-popup-pct').textContent = 'Ferdigstiller…';
+      document.getElementById('upd-popup-btn').textContent = 'Ferdigstiller…';
     } else {
-      row.style.display = 'none';
-      _updSetSettingsStatus('Ferdigstiller oppdatering…', '', false);
+      document.getElementById('upd-popup-pct').textContent = pct + '%';
+      document.getElementById('upd-popup-btn').textContent = 'Laster ned… ' + pct + '%';
+    }
+    document.getElementById('upd-popup-btn').disabled = true;
+
+    // ── Settings ──
+    const row = document.getElementById('upd-progress-row');
+    row.style.display = '';
+    document.getElementById('upd-bar').style.width = pct + '%';
+    if (done) {
+      row.classList.add('upd-finalizing');
+      document.getElementById('upd-pct-lbl').textContent = 'Ferdigstiller…';
+      _updSetSettingsStatus('Ferdigstiller oppdatering…', 'Pakker ut installer — kan ta litt tid', false);
+    } else {
+      document.getElementById('upd-pct-lbl').textContent = pct + '%';
+      _updSetSettingsStatus('Laster ned oppdatering…', pct + '%', false);
     }
   });
 
   window.pawgateUpdater.onUpdateDownloaded(info => {
     _updateDownloaded = true;
-    // Popup
-    document.getElementById('upd-popup-progress').style.display = 'none';
+
+    // ── Popup: klar-tilstand ──
+    const popProg = document.getElementById('upd-popup-progress');
+    popProg.classList.remove('upd-finalizing');
+    popProg.style.display = 'none';
     document.getElementById('upd-popup-ready').style.display = '';
+    document.getElementById('upd-popup-ready-sub').textContent = `Klar til å installere v${info.version}`;
     const btn = document.getElementById('upd-popup-btn');
-    btn.textContent = 'Start på nytt og installer';
+    btn.textContent = '↩  Start på nytt og installer';
     btn.disabled = false;
     if (!_updateDismissed) om('m-update');
-    // Settings
-    document.getElementById('upd-progress-row').style.display = 'none';
+
+    // ── Settings: klar-tilstand ──
+    const row = document.getElementById('upd-progress-row');
+    row.classList.remove('upd-finalizing');
+    row.style.display = 'none';
     document.getElementById('upd-actions-row').style.display = 'flex';
-    document.getElementById('upd-run-btn').textContent = 'Start på nytt';
-    _updSetSettingsStatus(`Versjon ${info.version} klar til installasjon`, 'Trykk "Start på nytt" for å installere', false);
+    document.getElementById('upd-run-btn').textContent = '↩  Start på nytt';
+    document.getElementById('upd-status-icon').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7aaa5c" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    _updSetSettingsStatus(`v${info.version} klar til installasjon`, 'Trykk "Start på nytt" for å installere nå', false);
   });
 }
 </script>
