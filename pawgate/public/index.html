@@ -510,7 +510,7 @@ body.scaled .phone{transition:transform .1s}
       <div class="sum-pill" onclick="showToast('Viser opne luker')"><div class="sum-num oc" id="cnt-open">0</div><div class="sum-label">Opne luker</div></div>
       <div class="sum-pill" onclick="showToast('Viser lukket luker')"><div class="sum-num cc" id="cnt-closed">0</div><div class="sum-label">Lukka</div></div>
       <div class="sum-pill" onclick="showToast('Kamera aktive')"><div class="sum-num" id="cnt-cams">0</div><div class="sum-label">Kamera</div></div>
-      <div class="sum-pill" onclick="gs('calendar')"><div class="sum-num ac" id="cnt-tasks">0</div><div class="sum-label">Oppgåver i dag</div></div>
+      <div class="sum-pill" onclick="navTo('calendar')"><div class="sum-num ac" id="cnt-tasks">0</div><div class="sum-label">Oppgåver i dag</div></div>
     </div>
     <div class="sec-label">Alle bingar <button class="sec-edit-btn" id="layout-btn" onclick="toggleEditMode()">Rediger layout</button></div>
     <div class="edit-mode-bar" id="edit-mode-bar">
@@ -1669,6 +1669,7 @@ function showToast(m){clearTimeout(tt);const t=document.getElementById('toast');
 
 // Modal
 function om(id){
+  if (id === 'm-invite' && _plan === 'basis') { showUpgrade('bruker'); return; }
   document.getElementById(id).classList.add('show');
   // Auto-focus first input after transition
   setTimeout(()=>{
@@ -1687,6 +1688,7 @@ function gs(name){
   const ec=document.getElementById('screen-'+cur);if(ec){ec.classList.remove('visible');ec.classList.add('hidden-left')}
   const en=document.getElementById('screen-'+name);if(en){en.classList.remove('hidden-right','hidden-left');en.classList.add('visible')}
   screenStack.push(name);
+  if(name==='calendar'){renderCalendar();renderTaskList();}
 }
 function gb(){
   if(screenStack.length<=1)return;
@@ -1708,6 +1710,7 @@ function navTo(name){
   document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('visible','hidden-left');s.classList.add('hidden-right')});
   const el=document.getElementById('screen-'+name);if(el){el.classList.remove('hidden-right');el.classList.add('visible')}
   screenStack=[name];
+  if(name==='calendar'){renderCalendar();renderTaskList();}
 }
 
 // Counts
@@ -4003,12 +4006,7 @@ async function startStripeCheckout() {
   }
 }
 
-// Patch invite buttons to respect plan
-const _origOm = om;
-function om(id) {
-  if ((id === 'm-invite') && _plan === 'basis') { showUpgrade('bruker'); return; }
-  _origOm(id);
-}
+// Plan check for om() is handled inside the om() function itself
 
 // ── Kontekst-guider (hundeluke, kamera, spyling) ──
 const _hwGuides = {
