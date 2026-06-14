@@ -76,6 +76,11 @@ autoUpdater.on('update-downloaded', (info) => {
   if (mainWin) mainWin.webContents.send('update-downloaded', { version: info.version });
 });
 
+autoUpdater.on('error', (err) => {
+  console.log('[updater] error:', err.message);
+  if (mainWin) mainWin.webContents.send('update-error', { message: err.message });
+});
+
 ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall();
 });

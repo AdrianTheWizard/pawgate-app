@@ -4286,6 +4286,19 @@ if (window.pawgateUpdater) {
       row.classList.add('upd-finalizing');
       document.getElementById('upd-pct-lbl').textContent = 'Ferdigstiller…';
       _updSetSettingsStatus('Ferdigstiller oppdatering…', 'Pakker ut installer — kan ta litt tid', false);
+      // Fallback: viss onUpdateDownloaded ikkje fyr innan 3 min, vis manuell-restart-knapp
+      if (!_updateDownloaded) {
+        setTimeout(() => {
+          if (!_updateDownloaded) {
+            _updSetSettingsStatus('Klar — start på nytt for å installere', 'Oppdatering er lasta ned', false);
+            const r2 = document.getElementById('upd-progress-row');
+            r2.classList.remove('upd-finalizing');
+            r2.style.display = 'none';
+            document.getElementById('upd-actions-row').style.display = 'flex';
+            document.getElementById('upd-run-btn').textContent = '↩  Start på nytt';
+          }
+        }, 180000);
+      }
     } else {
       document.getElementById('upd-pct-lbl').textContent = pct + '%';
       _updSetSettingsStatus('Laster ned oppdatering…', pct + '%', false);
@@ -4294,27 +4307,53 @@ if (window.pawgateUpdater) {
 
   window.pawgateUpdater.onUpdateDownloaded(info => {
     _updateDownloaded = true;
-
-    // ── Popup: klar-tilstand ──
-    const popProg = document.getElementById('upd-popup-progress');
-    popProg.classList.remove('upd-finalizing');
-    popProg.style.display = 'none';
-    document.getElementById('upd-popup-ready').style.display = '';
-    document.getElementById('upd-popup-ready-sub').textContent = `Klar til å installere v${info.version}`;
-    const btn = document.getElementById('upd-popup-btn');
-    btn.textContent = '↩  Start på nytt og installer';
-    btn.disabled = false;
-    if (!_updateDismissed) om('m-update');
-
-    // ── Settings: klar-tilstand ──
-    const row = document.getElementById('upd-progress-row');
-    row.classList.remove('upd-finalizing');
-    row.style.display = 'none';
-    document.getElementById('upd-actions-row').style.display = 'flex';
-    document.getElementById('upd-run-btn').textContent = '↩  Start på nytt';
-    document.getElementById('upd-status-icon').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7aaa5c" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-    _updSetSettingsStatus(`v${info.version} klar til installasjon`, 'Trykk "Start på nytt" for å installere nå', false);
+    _updShowReady(info.version);
   });
+
+  window.pawgateUpdater.onUpdateError(info => {
+    _updShowError(info.message || 'Ukjent feil');
+  });
+}
+
+function _updShowReady(version) {
+  // ── Popup: klar-tilstand ──
+  const popProg = document.getElementById('upd-popup-progress');
+  popProg.classList.remove('upd-finalizing');
+  popProg.style.display = 'none';
+  document.getElementById('upd-popup-ready').style.display = '';
+  document.getElementById('upd-popup-ready-sub').textContent = `Klar til å installere v${version}`;
+  const btn = document.getElementById('upd-popup-btn');
+  btn.textContent = '↩  Start på nytt og installer';
+  btn.disabled = false;
+  if (!_updateDismissed) om('m-update');
+
+  // ── Settings: klar-tilstand ──
+  const row = document.getElementById('upd-progress-row');
+  row.classList.remove('upd-finalizing');
+  row.style.display = 'none';
+  document.getElementById('upd-actions-row').style.display = 'flex';
+  document.getElementById('upd-run-btn').textContent = '↩  Start på nytt';
+  document.getElementById('upd-status-icon').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7aaa5c" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  _updSetSettingsStatus(`v${version} klar til installasjon`, 'Trykk "Start på nytt" for å installere nå', false);
+}
+
+function _updShowError(msg) {
+  // ── Popup ──
+  const popProg = document.getElementById('upd-popup-progress');
+  popProg.classList.remove('upd-finalizing');
+  popProg.style.display = 'none';
+  const btn = document.getElementById('upd-popup-btn');
+  btn.textContent = 'Prøv igjen';
+  btn.disabled = false;
+  btn.onclick = () => { cm('m-update'); pgCheckUpdates(); };
+
+  // ── Settings ──
+  const row = document.getElementById('upd-progress-row');
+  row.classList.remove('upd-finalizing');
+  row.style.display = 'none';
+  document.getElementById('upd-status-icon').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  _updSetSettingsStatus('Oppdatering feilet', 'Prøv å starte appen på nytt', false);
+  _checkingUpdate = false;
 }
 </script>
 
