@@ -1765,29 +1765,6 @@ function hwTag(b) {
 function renderList(){
   const list=document.getElementById('binge-list');list.innerHTML='';
 
-  // Basis plan: no binge access — show upgrade card
-  if (_plan === 'basis') {
-    list.innerHTML = `
-      <div style="margin:24px 0;background:linear-gradient(135deg,#1a1204 0%,#2d2008 100%);border:1px solid #3a2e18;border-radius:18px;padding:28px 22px;text-align:center">
-        <div style="font-size:38px;margin-bottom:10px">🔒</div>
-        <div style="font-size:17px;font-weight:700;color:#f0ece0;margin-bottom:6px">PawGate Pro kreves</div>
-        <div style="font-size:13px;color:#9a8866;line-height:1.6;margin-bottom:20px">Binger, hardware-styring og kamera er kun tilgjengelig med Pro-abonnement.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:20px;text-align:left">
-          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Ubegrenset binger</div>
-          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Automatiske timere</div>
-          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Opptil 10 brukere</div>
-          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Kalender og oppgaver</div>
-          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Smarte varsler</div>
-          <div style="font-size:12px;color:#c8aa6e;display:flex;align-items:center;gap:6px"><span style="color:#d4a847">✓</span> Live kamera</div>
-        </div>
-        <button onclick="showUpgrade('binger')" style="width:100%;padding:14px;border-radius:12px;border:none;background:#d4a847;color:#1a1204;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
-          Kjøp Pro — 399 kr/mnd
-        </button>
-        <div style="font-size:11px;color:#6a5c44;margin-top:10px">Ingen binding · Si opp når som helst</div>
-      </div>`;
-    updateCounts();
-    return;
-  }
 
   binges.forEach((b,idx)=>{
     const card=document.createElement('div');
@@ -2054,7 +2031,7 @@ function deleteBinge(){
 }
 let _addHwSel = 'pawgate';
 function openAddBinge() {
-  if (_plan === 'basis') { showUpgrade('binger'); return; }
+  if (_plan === 'basis' && binges.length >= 3) { showUpgrade('binger'); return; }
   document.getElementById('add-bname').value = `Binge ${binges.length+1}`;
   document.getElementById('add-dname').value = '';
   _addHwSel = 'pawgate';
