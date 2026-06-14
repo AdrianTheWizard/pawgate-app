@@ -45,6 +45,10 @@ function createWindow() {
 
 // ── Auto-updater events → renderer ──
 
+autoUpdater.on('update-not-available', (info) => {
+  if (mainWin) mainWin.webContents.send('update-not-available', { version: info.version });
+});
+
 autoUpdater.on('update-available', (info) => {
   if (!mainWin) return;
   // Normalise release notes to plain text
@@ -74,6 +78,13 @@ autoUpdater.on('update-downloaded', (info) => {
 
 ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall();
+});
+
+ipcMain.on('check-for-updates', () => {
+  autoUpdater.checkForUpdates().catch((err) => {
+    console.log('[updater] manual check failed:', err.message);
+    if (mainWin) mainWin.webContents.send('update-not-available', { version: app.getVersion() });
+  });
 });
 
 ipcMain.on('get-app-version', (event) => {

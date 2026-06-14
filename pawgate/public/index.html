@@ -65,6 +65,8 @@ html.is-electron .desktop-sidebar{display:flex!important}
 .ds-item.active svg{opacity:1}
 .ds-badge{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--closed);display:none}
 .ds-badge.show{display:block}
+@keyframes pgSpin{to{transform:rotate(360deg)}}
+.upd-spinning svg{animation:pgSpin .9s linear infinite;transform-origin:center}
 .ds-footer{padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:#4a4840;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
 
 /* Sidebar takes fixed width, phone fills the rest */
@@ -973,12 +975,19 @@ body.scaled .phone{transition:transform .1s}
         </div>
         <div class="sr" id="upd-status-row" style="cursor:default;display:none">
           <div class="sr-left">
-            <div class="sr-icon" id="upd-status-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="sr-lbl" id="upd-status-lbl">Sjekker etter oppdateringer…</div><div class="sr-sub" id="upd-status-sub"></div></div>
+            <div class="sr-icon" id="upd-status-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div>
+            <div><div class="sr-lbl" id="upd-status-lbl">Søker etter oppdateringer…</div><div class="sr-sub" id="upd-status-sub"></div></div>
           </div>
           <div class="sr-right" id="upd-install-btn" style="display:none">
-            <button onclick="pgInstallUpdate()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer">Installer</button>
+            <button onclick="pgInstallUpdate()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--accent);color:#1e1c18;font-size:13px;font-weight:600;cursor:pointer">Installer</button>
           </div>
+        </div>
+        <div id="upd-actions-row" style="display:none;padding:0 14px 12px;gap:8px;display:none;flex-direction:row">
+          <button id="upd-vis-mer-btn" onclick="pgToggleNotes()" style="flex:1;padding:8px 0;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">Vis mer</button>
+          <button id="upd-run-btn" onclick="pgUpdateAction()" style="flex:1;padding:8px 0;border-radius:10px;border:none;background:var(--accent);color:#1e1c18;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Kjør oppdatering</button>
+        </div>
+        <div id="upd-notes-row" style="display:none;padding:0 14px 12px">
+          <div id="upd-notes-txt" style="font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;max-height:150px;overflow-y:auto"></div>
         </div>
         <div id="upd-progress-row" style="display:none;padding:12px 14px">
           <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px">
@@ -1631,20 +1640,9 @@ async function signOut() {
 
 /* ─────────────────────────────────────────────── */
 
-let binges=[
-  {id:1,name:'Binge 1',dog:'Bella',open:true, lc:'07:02 i dag',ls:'07:31 i dag',st:[{t:'07:30',label:'Morgon',enabled:true,active:true},{t:'12:00',label:'Middag',enabled:true,active:false},{t:'18:00',label:'Kveld',enabled:true,active:false}],ao:'07:00',ac:'21:00',cam:'Kamera 1 – Binge 1',spraying:false},
-  {id:2,name:'Binge 2',dog:'Rex',  open:false,lc:'08:30 i dag',ls:'07:32 i dag',st:[{t:'07:30',label:'Morgon',enabled:true,active:true},{t:'12:00',label:'Middag',enabled:false,active:false},{t:'18:00',label:'Kveld',enabled:true,active:false}],ao:'07:00',ac:'21:00',cam:'Kamera 2 – Binge 2',spraying:false},
-  {id:3,name:'Binge 3',dog:'Luna', open:true, lc:'07:05 i dag',ls:'07:33 i dag',st:[{t:'07:30',label:'Morgon',enabled:true,active:true},{t:'12:00',label:'Middag',enabled:true,active:false},{t:'18:00',label:'Kveld',enabled:true,active:false}],ao:'07:00',ac:'21:00',cam:'Kamera 3 – Binge 3',spraying:false},
-  {id:4,name:'Binge 4',dog:'Thor', open:true, lc:'07:00 i dag',ls:'07:30 i dag',st:[{t:'07:30',label:'Morgon',enabled:true,active:true},{t:'12:00',label:'Middag',enabled:true,active:false},{t:'18:00',label:'Kveld',enabled:false,active:false}],ao:'07:00',ac:'21:00',cam:'Kamera 4 – Binge 4',spraying:false},
-];
+let binges=[];
 let payMethods=[{type:'card',name:'Visa',sub:'•••• •••• •••• 4242',active:true}];
-let notifs=[
-  {id:1,title:'Binge 2 – luke lukka',body:'Automatisk lukking kl. 21:00 gjennomført.',time:'I dag, 21:00',read:false},
-  {id:2,title:'Spyling fullført – Binge 1',body:'Spyling kl. 07:30 ferdig. 45 sek.',time:'I dag, 07:31',read:false},
-  {id:3,title:'Oppgåve: Vask kennel',body:'Påminning kl. 08:00 i dag.',time:'I dag, 08:00',read:false},
-  {id:4,title:'Alle luker opna',body:'Automatisk åpning kl. 07:00 gjennomført.',time:'I dag, 07:00',read:true},
-  {id:5,title:'Tilkobling gjenoppretta',body:'Binge 3 tilkobla att.',time:'I går, 14:22',read:true},
-];
+let notifs=[];
 const now=new Date();
 let tasks=[
   {id:1,title:'Vask kennel',date:fd(now),time:'08:00',tag:'kennel',done:false},
@@ -4203,12 +4201,44 @@ function pgUpdateAction() {
   // If not yet downloaded, download is already running automatically — just close popup
 }
 
+let _checkingUpdate = false, _checkStartTime = 0, _updNotes = '';
+
 function pgCheckUpdates() {
-  const row = document.getElementById('upd-status-row');
-  const lbl = document.getElementById('upd-status-lbl');
-  const sub = document.getElementById('upd-status-sub');
-  if (row) { row.style.display = ''; lbl.textContent = 'Sjekker etter oppdateringer…'; sub.textContent = ''; }
-  showToast('Sjekker etter oppdateringer…');
+  if (!window.pawgateUpdater) { showToast('Oppdateringer ikke tilgjengelig i nettleser'); return; }
+  if (_checkingUpdate) return;
+  _checkingUpdate = true;
+  _checkStartTime = Date.now();
+  const icon = document.getElementById('upd-status-icon');
+  const row  = document.getElementById('upd-status-row');
+  const lbl  = document.getElementById('upd-status-lbl');
+  const sub  = document.getElementById('upd-status-sub');
+  row.style.display = '';
+  lbl.textContent = 'Søker etter oppdateringer…';
+  sub.textContent = '';
+  icon.classList.add('upd-spinning');
+  document.getElementById('upd-install-btn').style.display = 'none';
+  document.getElementById('upd-actions-row').style.display = 'none';
+  document.getElementById('upd-notes-row').style.display = 'none';
+  window.pawgateUpdater.checkForUpdates();
+}
+
+function _updStopSpinner() {
+  document.getElementById('upd-status-icon').classList.remove('upd-spinning');
+  _checkingUpdate = false;
+}
+
+function _updMinDelay(fn) {
+  const elapsed = Date.now() - _checkStartTime;
+  const wait = Math.max(0, 1400 - elapsed);
+  setTimeout(fn, wait);
+}
+
+function pgToggleNotes() {
+  const notesRow = document.getElementById('upd-notes-row');
+  const btn = document.getElementById('upd-vis-mer-btn');
+  const showing = notesRow.style.display !== 'none';
+  notesRow.style.display = showing ? 'none' : '';
+  btn.textContent = showing ? 'Vis mer' : 'Skjul';
 }
 
 function _updSetSettingsStatus(lbl, sub, showInstall) {
@@ -4222,29 +4252,46 @@ function _updSetSettingsStatus(lbl, sub, showInstall) {
 
 if (window.pawgateUpdater) {
   window.pawgateUpdater.onUpdateAvailable(info => {
-    const notes = (info.notes || '').replace(/#{1,3} /g, '').trim();
+    _updNotes = (info.notes || '').replace(/#{1,3} /g, '').trim();
+    _updMinDelay(() => {
+      _updStopSpinner();
+      // Popup
+      document.getElementById('upd-popup-ver').textContent = `Versjon ${info.version}`;
+      const notesEl = document.getElementById('upd-popup-notes');
+      if (_updNotes) { notesEl.textContent = _updNotes; notesEl.style.display = ''; }
+      document.getElementById('upd-popup-btn').textContent = 'Oppdater nå';
+      document.getElementById('upd-popup-btn').disabled = false;
+      if (!_updateDismissed) om('m-update');
+      // Settings status
+      _updSetSettingsStatus(`Ny versjon tilgjengelig: ${info.version}`, 'Nedlasting starter automatisk', false);
+      // Show actions row (Vis mer + Kjør oppdatering)
+      const actRow = document.getElementById('upd-actions-row');
+      actRow.style.display = 'flex';
+      // Populate notes for settings
+      if (_updNotes) document.getElementById('upd-notes-txt').textContent = _updNotes;
+      else document.getElementById('upd-vis-mer-btn').style.display = 'none';
+    });
+  });
 
-    // Show popup
-    document.getElementById('upd-popup-ver').textContent = `Versjon ${info.version}`;
-    const notesEl = document.getElementById('upd-popup-notes');
-    if (notes) { notesEl.textContent = notes; notesEl.style.display = ''; }
-    document.getElementById('upd-popup-btn').textContent = 'Oppdater nå';
-    document.getElementById('upd-popup-btn').disabled = false;
-    if (!_updateDismissed) om('m-update');
-
-    // Update settings section
-    _updSetSettingsStatus(`Ny versjon tilgjengelig: ${info.version}`, notes ? notes.split('\n')[0] : '', false);
+  window.pawgateUpdater.onUpdateNotAvailable(info => {
+    _updMinDelay(() => {
+      _updStopSpinner();
+      const ver = (info && info.version) ? info.version : (window.pawgateUpdater.getVersion() || '–');
+      // Change icon to checkmark
+      document.getElementById('upd-status-icon').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7aaa5c" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+      _updSetSettingsStatus('Ingen oppdatering funnet', `Du kjører nyeste versjon (v${ver})`, false);
+    });
   });
 
   window.pawgateUpdater.onDownloadProgress(prog => {
     const done = prog.percent >= 100;
-    // In popup
+    // Popup
     document.getElementById('upd-popup-progress').style.display = '';
     document.getElementById('upd-popup-pct').textContent = done ? 'Ferdigstiller…' : prog.percent + '%';
     document.getElementById('upd-popup-bar').style.width = prog.percent + '%';
     document.getElementById('upd-popup-btn').textContent = done ? 'Ferdigstiller oppdatering…' : 'Laster ned… ' + prog.percent + '%';
     document.getElementById('upd-popup-btn').disabled = true;
-    // In settings
+    // Settings progress
     const row = document.getElementById('upd-progress-row');
     if (!done) {
       row.style.display = '';
@@ -4262,12 +4309,14 @@ if (window.pawgateUpdater) {
     document.getElementById('upd-popup-progress').style.display = 'none';
     document.getElementById('upd-popup-ready').style.display = '';
     const btn = document.getElementById('upd-popup-btn');
-    btn.textContent = 'Start på nytt';
+    btn.textContent = 'Start på nytt og installer';
     btn.disabled = false;
     if (!_updateDismissed) om('m-update');
     // Settings
     document.getElementById('upd-progress-row').style.display = 'none';
-    _updSetSettingsStatus(`Versjon ${info.version} klar til installasjon`, '', true);
+    document.getElementById('upd-actions-row').style.display = 'flex';
+    document.getElementById('upd-run-btn').textContent = 'Start på nytt';
+    _updSetSettingsStatus(`Versjon ${info.version} klar til installasjon`, 'Trykk "Start på nytt" for å installere', false);
   });
 }
 </script>
