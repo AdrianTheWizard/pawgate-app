@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PawGate</title>
+<script>
+// Runs before CSS renders — detects Electron and applies classes immediately
+(function() {
+  var isElectron = location.search.indexOf('electron=1') !== -1 || navigator.userAgent.indexOf('Electron') !== -1;
+  if (isElectron) {
+    document.documentElement.classList.add('is-electron');
+  }
+})();
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -29,21 +38,22 @@ body.native-app .notch{display:none!important}
 body.native-app .statusbar{display:none!important}
 body.native-app .nav-bar{padding-bottom:env(safe-area-inset-bottom,0px)}
 
-/* ── Electron desktop: sidebar layout ── */
-body.electron-app .bottom-nav{display:none!important}
-body.electron-app .nav-bar{display:none!important}
-body.electron-app .screen{padding-bottom:0!important}
-body.electron-app .cal-day{aspect-ratio:unset!important;height:44px!important;font-size:12px!important}
-body.electron-app .cal-grid{gap:2px!important;padding-bottom:4px!important}
-body.electron-app .cal-grid-hdr{font-size:11px!important}
+/* ── Electron desktop layout — driven by html.is-electron set in <head> before rendering ── */
+html.is-electron body{flex-direction:row!important;align-items:stretch!important;padding:0!important;gap:0!important;background:var(--bg)}
+html.is-electron body .page-header{display:none!important}
+html.is-electron body .bottom-nav{display:none!important}
+html.is-electron body .nav-bar{display:none!important}
+html.is-electron body .screen{padding-bottom:0!important}
+html.is-electron body .phone{flex:1!important;width:auto!important;max-width:none!important;height:100vh!important;height:100dvh!important;border-radius:0!important;border:none!important;box-shadow:none!important;}
+html.is-electron body .notch{display:none!important}
+html.is-electron body .statusbar{display:none!important}
+html.is-electron body .cal-day{aspect-ratio:unset!important;height:44px!important;font-size:12px!important}
+html.is-electron body .cal-grid{gap:2px!important;padding-bottom:4px!important}
+html.is-electron body .cal-grid-hdr{font-size:11px!important}
 
-body.electron-app.native-app{flex-direction:row!important;align-items:stretch!important;background:var(--bg)}
-body.electron-app.native-app .phone{flex:1!important;width:auto!important;max-width:none!important;height:100vh!important;height:100dvh!important;border:none!important;}
-body.electron-app.native-app::after{content:none}
-
-/* Desktop sidebar */
+/* Desktop sidebar — hidden by default, shown only in Electron */
 .desktop-sidebar{display:none;width:220px;min-width:220px;background:var(--bg);border-right:1px solid var(--border);flex-direction:column;flex-shrink:0}
-body.electron-app.native-app .desktop-sidebar{display:flex}
+html.is-electron .desktop-sidebar{display:flex!important}
 .ds-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .ds-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(184,154,90,.5);flex-shrink:0}
 .ds-name{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.12em;color:var(--text)}
@@ -3778,12 +3788,9 @@ function dsActive(id) {
 
 // ── Environment detection + autoscaling ──
 (function detectAndScale() {
-  const ua          = navigator.userAgent;
-  const isElectron  = new URLSearchParams(window.location.search).get('electron') === '1'
-                      || ua.includes('Electron') || !!window.pawgateUpdater;
+  const isElectron  = document.documentElement.classList.contains('is-electron');
   const isCapacitor = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
-  if (isElectron)  document.body.classList.add('electron-app');
   if (isCapacitor) document.body.classList.add('capacitor-app');
 
   try {
