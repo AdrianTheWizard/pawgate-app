@@ -1,6 +1,6 @@
 {
   "name": "pawgate",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "PawGate — Smart kennelstyring",
   "author": {
     "name": "PawGate",
@@ -84,8 +84,8 @@
     },
     "nsis": {
       "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "PawGate",
