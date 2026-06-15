@@ -118,6 +118,16 @@ body.scaled .phone{transition:transform .1s}
 
 /* ── Binge list ── */
 .binge-scroll{overflow-y:auto;flex:1;padding:0 10px;display:flex;flex-direction:column;gap:8px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:32px 20px;text-align:center;gap:10px}
+.es-icon{font-size:48px;margin-bottom:4px}
+.es-title{font-size:18px;font-weight:700;color:var(--text)}
+.es-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:300px}
+.es-steps{display:flex;flex-direction:column;gap:8px;margin-top:8px;width:100%;max-width:300px;text-align:left}
+.es-step{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--muted);line-height:1.5}
+.es-num{min-width:20px;height:20px;background:var(--accent);color:#1e1c18;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.es-step strong{color:var(--text)}
+.es-arrow{font-size:22px;color:var(--accent);animation:pgBounce 1.2s ease-in-out infinite;margin-top:4px}
+@keyframes pgBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
 .binge-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:border-color .15s}
 .binge-card:hover{border-color:var(--border2)}
@@ -1583,6 +1593,9 @@ async function loadFromCloud(userId) {
     tasks = taskRows.map(r => ({id: r.id, title: r.title, date: r.date, time: r.time||'', tag: r.tag||'routine', done: r.done}));
     renderCalendar(); renderTaskList();
   }
+
+  // Load history events
+  sbLoadHistory();
 }
 
 function pgNotify(title, body) {
@@ -1765,7 +1778,24 @@ function hwTag(b) {
 
 function renderList(){
   const list=document.getElementById('binge-list');list.innerHTML='';
+  const layoutBtn=document.getElementById('layout-btn');
+  if(layoutBtn) layoutBtn.style.display=binges.length?'':'none';
 
+  if(binges.length===0){
+    list.innerHTML=`
+      <div class="empty-state">
+        <div class="es-icon">🐾</div>
+        <div class="es-title">Ingen bingar enno</div>
+        <div class="es-sub">Legg til di første binge for å begynne å styre kennelen din.<br>Du kan kople til hundeluker, kamera og sprøytesystem.</div>
+        <div class="es-steps">
+          <div class="es-step"><span class="es-num">1</span><span>Trykk <strong>+ Legg til binge</strong> nedst på skjermen</span></div>
+          <div class="es-step"><span class="es-num">2</span><span>Gi bingen eit namn og legg til hunden som bur der</span></div>
+          <div class="es-step"><span class="es-num">3</span><span>Kople til hardware under binge-innstillingar</span></div>
+        </div>
+        <div class="es-arrow">↓</div>
+      </div>`;
+    return;
+  }
 
   binges.forEach((b,idx)=>{
     const card=document.createElement('div');
@@ -1882,6 +1912,8 @@ function toggleLuke(id,open){
   showToast(`${sanitize(b.name)}: Luke ${open?'opna':'lukka'} ✓`);
   sbSaveBinge(b);
   hwCall(b, open ? 'open' : 'close');
+  pgNotify(`Luke ${open?'opna':'lukka'} — ${b.name}`, kennelName);
+  sbInsertEvent({type:'luke', icon: open?'→':'←', title:`Luke ${open?'opna':'lukka'} manuelt`, binge:b.name, time:_fmtTime(new Date()), who:_user?.email||'Manuell'});
 }
 
 function quickSpray(id,btn){
@@ -1892,6 +1924,8 @@ function quickSpray(id,btn){
     b.spraying=false;b.ls=new Date().toTimeString().slice(0,5)+' i dag';
     renderList();showToast(`${sanitize(b.name)}: Spyling ferdig ✓`);
     sbSaveBinge(b);
+    pgNotify(`Spyling ferdig — ${b.name}`, kennelName);
+    sbInsertEvent({type:'spyl', icon:'💧', title:'Spyling utført manuelt', binge:b.name, time:_fmtTime(new Date()), who:_user?.email||'Manuell'});
   },3000);
 }
 
@@ -1920,7 +1954,10 @@ function dSetLuke(open){
   if(!activeBinge)return;activeBinge.open=open;activeBinge.lc=new Date().toTimeString().slice(0,5)+' i dag';
   document.getElementById('d-lc').textContent=activeBinge.lc;updateDetailUI();renderList();
   showToast(`${sanitize(activeBinge.name)}: Luke ${open?'opna':'lukka'} ✓`);
+  hwCall(activeBinge, open ? 'open' : 'close');
   sbSaveBinge(activeBinge);
+  pgNotify(`Luke ${open?'opna':'lukka'} — ${activeBinge.name}`, kennelName);
+  sbInsertEvent({type:'luke', icon: open?'→':'←', title:`Luke ${open?'opna':'lukka'} manuelt`, binge:activeBinge.name, time:_fmtTime(new Date()), who:_user?.email||'Manuell'});
 }
 function saveAuto(t,v){if(!activeBinge)return;if(_plan==='basis'){showUpgrade('timere');return;}if(t==='open')activeBinge.ao=v;else activeBinge.ac=v;showToast(`Automatisk ${t==='open'?'åpning':'lukking'} → ${v} ✓`)}
 function toggleSw(el,lbl){el.classList.toggle('on');showToast(`${lbl} ${el.classList.contains('on')?'på':'av'}`)}
@@ -2657,18 +2694,43 @@ function updateDogProfileUI() {
 }
 
 // ── History ──
-const allHistory = [
-  {type:'luke', icon:'→', title:'Luke åpnet automatisk',       binge:'Binge 1', time:'I dag 07:00',     who:'Automatikk'},
-  {type:'spyl', icon:'~', title:'Spyling fullført',            binge:'Binge 1', time:'I dag 07:31',     who:'Automatikk'},
-  {type:'luke', icon:'→', title:'Luke åpnet manuelt',           binge:'Binge 2', time:'I dag 08:12',     who:'Kari Hansen'},
-  {type:'varsel',icon:'!','title':'Temperaturvarsel',          binge:'Binge 3', time:'I dag 11:42',     who:'System'},
-  {type:'spyl', icon:'~', title:'Spyling starta manuelt',      binge:'Binge 4', time:'I dag 12:05',     who:'Ola Nordmann'},
-  {type:'luke', icon:'→', title:'Luke lukket automatisk',       binge:'Binge 2', time:'I går 21:00',     who:'Automatikk'},
-  {type:'spyl', icon:'~', title:'Spyling fullført',            binge:'Binge 3', time:'I går 18:00',     who:'Automatikk'},
-  {type:'varsel',icon:'🚨','title':'Tilkobling tapt – Binge 3', binge:'Binge 3', time:'I går 14:20',     who:'System'},
-  {type:'info', icon:'✏️', title:'Hundeprofil oppdatert',       binge:'Binge 1', time:'I går 09:15',     who:'Ola Nordmann'},
-  {type:'luke', icon:'→', title:'Luke åpnet automatisk',        binge:'Binge 4', time:'I går 07:00',     who:'Automatikk'},
-];
+let allHistory = [];
+
+function _fmtTime(d) {
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'Akkurat no';
+  if (diff < 3600000) return `${Math.floor(diff/60000)} min sidan`;
+  const hm = d.toTimeString().slice(0,5);
+  if (now.toDateString() === d.toDateString()) return `I dag ${hm}`;
+  if (new Date(now - 86400000).toDateString() === d.toDateString()) return `I går ${hm}`;
+  return `${d.toLocaleDateString('no-NO', {day:'numeric', month:'short'})} ${hm}`;
+}
+
+function sbInsertEvent(ev) {
+  allHistory.unshift(ev);
+  renderHistory();
+  renderHistoryPreview();
+  if (!_sb || !_kennelId) return;
+  _sb.from('gate_events').insert({
+    kennel_id: _kennelId,
+    type: ev.type, icon: ev.icon, title: ev.title,
+    binge_name: ev.binge, who: ev.who,
+  }).then(({error}) => { if (error) console.warn('sbInsertEvent:', error.message); });
+}
+
+async function sbLoadHistory() {
+  if (!_sb || !_kennelId) return;
+  const {data, error} = await _sb.from('gate_events').select('*')
+    .eq('kennel_id', _kennelId).order('created_at', {ascending: false}).limit(200);
+  if (error || !data) return;
+  allHistory = data.map(r => ({
+    type: r.type, icon: r.icon, title: r.title, binge: r.binge_name,
+    time: _fmtTime(new Date(r.created_at)), who: r.who,
+  }));
+  renderHistory();
+  renderHistoryPreview();
+}
 
 let historyFilter = 'all';
 let historyBinge  = null;
