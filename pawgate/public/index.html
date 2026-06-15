@@ -1898,6 +1898,7 @@ function quickSpray(id,btn){
 // Detail
 function openDetail(id){
   activeBinge=binges.find(x=>x.id===id);
+  if(!activeBinge)return;
   document.getElementById('ao-inp').value=activeBinge.ao;
   document.getElementById('ac-inp').value=activeBinge.ac;
   document.getElementById('d-lc').textContent=activeBinge.lc;
@@ -3100,8 +3101,6 @@ setTimeout(() => {
   buildHwOpts('hw-spyl-opts',  'pawgate', v => selHwSpyl = v);
   buildHwOpts('hw-luke-opts',  'pawgate', v => selHwLuke = v);
 }, 100);
-
-openDetail(1); gb();
 
 // Render all screens on load so content is ready
 renderList();
